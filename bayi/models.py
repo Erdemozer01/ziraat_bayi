@@ -3,6 +3,21 @@ from autoslug.fields import AutoSlugField
 from django_ckeditor_5.fields import CKEditor5Field
 
 
+class SettingsSite(models.Model):
+    name = models.CharField(max_length=10, unique=True, db_index=True, verbose_name="Site Adı")
+    email = models.EmailField(blank=True, verbose_name="Email Adres")
+    email_password = models.CharField(max_length=100, blank=True, verbose_name="Email Şifresi")
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Site Ayarları'
+        verbose_name_plural = 'Site Ayarları'
+
+
 class Header(models.Model):
     title = models.CharField(max_length=100)
     content = CKEditor5Field(config_name='extends', verbose_name='İçerik')
@@ -13,8 +28,8 @@ class Header(models.Model):
         return self.title
 
     class Meta:
-        verbose_name = 'Header'
-        verbose_name_plural = 'Header'
+        verbose_name = 'Duyuru'
+        verbose_name_plural = 'Duyuru'
 
 
 class ProductCategory(models.Model):

@@ -3,7 +3,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from django_ckeditor_5.views import upload_file
-
+from bayi.models import SettingsSite
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
@@ -16,3 +16,13 @@ urlpatterns = [
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
+try:
+    site = SettingsSite.objects.latest('created')
+    admin.site.site_title = site.name
+    admin.site.site_header = site.name
+    admin.site.index_title = site.name
+    admin.site.name = site.name
+except SettingsSite.DoesNotExist:
+    pass
