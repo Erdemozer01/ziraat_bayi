@@ -1,0 +1,26 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+
+{% block title %}Ziraat Bayi{% endblock %}
+
+{% block dark_mod %}
+    {% include 'widgets/darkmod.html' %}
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="{% static 'assets/css/blog.css' %}?{% now 'U' %}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="https://fonts.googleapis.com/css?family=Playfair&#43;Display:700,900&amp;display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <main class="container">
+        {% include 'includes/bayi/navbar.html' %}
+        {% include 'includes/bayi/header.html' %}
+        {% include 'includes/bayi/subscript.html' %}
+        {% include 'includes/bayi/search.html' %}
+        {% include 'includes/bayi/cards.html' %}
+        {% include 'includes/bayi/footer.html' %}
+    </main>
+{% endblock %}

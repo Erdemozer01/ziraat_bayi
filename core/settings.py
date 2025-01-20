@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bayi.apps.BayiConfig',
     'django_bootstrap5',
+    'django_ckeditor_5',
+    'galleryfield',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [
@@ -127,7 +130,368 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+customColorPalette = [
+    {
+        'color': 'hsl(4, 90%, 58%)',
+        'label': 'Red'
+    },
+    {
+        'color': 'hsl(340, 82%, 52%)',
+        'label': 'Pink'
+    },
+    {
+        'color': 'hsl(291, 64%, 42%)',
+        'label': 'Purple'
+    },
+    {
+        'color': 'hsl(262, 52%, 47%)',
+        'label': 'Deep Purple'
+    },
+    {
+        'color': 'hsl(231, 48%, 48%)',
+        'label': 'Indigo'
+    },
+    {
+        'color': 'hsl(207, 90%, 54%)',
+        'label': 'Blue'
+    },
+]
+CKEDITOR_5_CUSTOM_CSS = 'https://cdn.ckeditor.com/ckeditor5-premium-features/44.1.0/ckeditor5-premium-features.css'
+CK_EDITOR_5_UPLOAD_FILE_VIEW_NAME = "ckeditor_upload_file"
+CKEDITOR_5_ALLOW_ALL_FILE_TYPES = True
+CKEDITOR_5_UPLOAD_FILE_TYPES = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "tiff", "pdf", "xlsx"]
+CKEDITOR_5_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+CKEDITOR_5_USER_LANGUAGE = True
+CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff"  # Possible values: "staff", "authenticated", "any"
+
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'language': 'tr',
+        'toolbar': ['heading', '|', 'bold', 'italic', 'link',
+                    'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
+    },
+    'extends': {
+        'toolbar': {
+            'items': [
+
+                'undo', 'redo', '|', 'heading', 'Alignment',
+
+                '|',
+
+                {
+                    'label': 'Font',
+                    'items': [
+                        'bold', 'italic', 'link', 'underline', 'strikethrough', 'fontfamily', 'fontsize', 'fontColor',
+                        'fontBackgroundColor', 'highlight',
+                    ],
+                    'icon': 'text',
+                    'withText': 'true',
+                    'shouldNotGroupWhenFull': 'false',
+                },
+
+                '|',
+
+                {
+                    'label': 'Media',
+                    'items': [
+                        'imageUpload',
+                        'mediaEmbed',
+                        'Image',
+                        'ImageCaption',
+                        'ImageStyle',
+                        'ImageToolbar',
+                        'ImageResize',
+                        'insertImage',
+                        'fileUpload',
+                    ],
+                    'icon': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path fill="#74C0FC" d="M256 0L576 0c35.3 0 64 28.7 64 64l0 224c0 35.3-28.7 64-64 64l-320 0c-35.3 0-64-28.7-64-64l0-224c0-35.3 28.7-64 64-64zM476 106.7C471.5 100 464 96 456 96s-15.5 4-20 10.7l-56 84L362.7 169c-4.6-5.7-11.5-9-18.7-9s-14.2 3.3-18.7 9l-64 80c-5.8 7.2-6.9 17.1-2.9 25.4s12.4 13.6 21.6 13.6l80 0 48 0 144 0c8.9 0 17-4.9 21.2-12.7s3.7-17.3-1.2-24.6l-96-144zM336 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM64 128l96 0 0 256 0 32c0 17.7 14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-32 160 0 0 64c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 192c0-35.3 28.7-64 64-64zm8 64c-8.8 0-16 7.2-16 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0zm0 104c-8.8 0-16 7.2-16 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0zm0 104c-8.8 0-16 7.2-16 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0zm336 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0c-8.8 0-16 7.2-16 16z"/></svg>',
+                    'withText': 'true',
+                },
+
+                '|',
+
+                {
+                    'label': 'List',
+                    'items': [
+                        'bulletedList', 'numberedList', 'todoList',
+                    ],
+
+                    'withText': 'true',
+                },
+
+                '|',
+
+                {
+                    'label': 'Ekle',
+                    'items': [
+                        'insertTable',
+                        "TableToolbar",
+                        "TableCaption",
+                        "TableProperties",
+                        "TableCellProperties",
+                        'codeBlock',
+                        'Link',
+                    ],
+                    'icon': 'plus',
+                    'withText': 'true',
+                },
+
+                '|',
+
+                {
+                    'label': 'Diğer',
+                    'items': [
+                        'code', 'subscript', 'superscript', 'sourceEditing', 'blockQuote', '|', 'removeFormat',
+                    ],
+                    'icon': False,
+                    'withText': 'true',
+                },
+
+                '|',
+
+                "FullScreen", "exportPdf"
+
+            ],
+            'shouldNotGroupWhenFull': "false",
+        },
+
+        'style': {
+            "definitions": [
+                {
+                    "name": 'Article category',
+                    "element": 'h3',
+                    "classes": ['category']
+                },
+                {
+                    "name": 'Title',
+                    "element": 'h2',
+                    "classes": ['document-title']
+                },
+                {
+                    "name": 'Subtitle',
+                    "element": 'h3',
+                    "classes": ['document-subtitle']
+                },
+                {
+                    "name": 'Info box',
+                    "element": 'p',
+                    "classes": ['info-box']
+                },
+                {
+                    "name": 'Side quote',
+                    "element": 'blockquote',
+                    "classes": ['side-quote']
+                },
+                {
+                    "name": 'Marker',
+                    "element": 'span',
+                    "classes": ['marker']
+                },
+                {
+                    "name": 'Spoiler',
+                    "element": 'span',
+                    "classes": ['spoiler']
+                },
+                {
+                    "name": 'Code (dark)',
+                    "element": 'pre',
+                    "classes": ['fancy-code', 'fancy-code-dark']
+                },
+                {
+                    "name": 'Code (bright)',
+                    "element": 'pre',
+                    "classes": ['fancy-code', 'fancy-code-bright']
+                },
+            ]
+        },
+
+        'heading': {
+            'options': [
+                {'model': 'paragraph', 'title': 'Paragraph', 'class': 'ck-heading_paragraph'},
+                {'model': 'heading1', 'view': 'h1', 'title': 'Heading 1', 'class': 'ck-heading_heading1'},
+                {'model': 'heading2', 'view': 'h2', 'title': 'Heading 2', 'class': 'ck-heading_heading2'},
+                {'model': 'heading3', 'view': 'h3', 'title': 'Heading 3', 'class': 'ck-heading_heading3'},
+                {'model': 'heading4', 'view': 'h4', 'title': 'Heading 4', 'class': 'ck-heading_heading4'},
+                {'model': 'heading5', 'view': 'h5', 'title': 'Heading 5', 'class': 'ck-heading_heading5'},
+            ]
+        },
+
+        'balloonToolbar': {
+            'items': ['bold', 'italic', '|', 'link', 'insertImage', '|', 'bulletedList', 'numberedList']
+        },
+
+        'blockToolbar': [
+            'fontSize',
+            'fontColor',
+            'fontBackgroundColor',
+            '|',
+            'bold',
+            'italic',
+            '|',
+            'link',
+            'insertImage',
+            'insertTable',
+            '|',
+            'bulletedList',
+            'numberedList',
+            'outdent',
+            'indent'
+        ],
+
+        'fontFamily': {
+            "options": [
+                'default',
+                'Arial, Helvetica, sans-serif',
+                'Courier New, Courier, monospace',
+                'Georgia, serif',
+                'Lucida Sans Unicode, Lucida Grande, sans-serif',
+                'Tahoma, Geneva, sans-serif',
+                'Times New Roman, Times, serif',
+                'Trebuchet MS, Helvetica, sans-serif',
+                'Verdana, Geneva, sans-serif'
+            ],
+            'supportAllValues': "true"
+        },
+
+        "exportPdf": {
+            "stylesheets": [
+                'https://cdn.ckeditor.com/ckeditor5/44.1.0/ckeditor5.css',
+                'EDITOR_STYLES',
+                'https://cdn.ckeditor.com/ckeditor5-premium-features/44.1.0/ckeditor5-premium-features.css'
+            ],
+            "fileName": 'export-pdf-demo.pdf',
+            "converterOptions": {
+                "format": 'Tabloid',
+                "margin_top": '20mm',
+                "margin_bottom": '20mm',
+                "margin_right": '24mm',
+                "margin_left": '24mm',
+                "page_orientation": 'portrait'
+            }
+        },
+
+        "image": {
+            "toolbar": [
+                'toggleImageCaption',
+                'imageTextAlternative',
+                '|',
+                'imageStyle:inline',
+                'imageStyle:wrapText',
+                'imageStyle:breakText',
+                '|',
+                'resizeImage',
+                '|',
+                'ckboxImageEdit'
+            ]
+        },
+
+        'table': {
+            'contentToolbar': ['tableColumn', 'tableRow', 'mergeTableCells',
+                               'tableProperties', 'tableCellProperties'],
+            'tableProperties': {
+                'borderColors': customColorPalette,
+                'backgroundColors': customColorPalette
+            },
+            'tableCellProperties': {
+                'borderColors': customColorPalette,
+                'backgroundColors': customColorPalette
+            }
+        },
+
+        'list': {
+            'properties': {
+                'styles': 'true',
+                'startIndex': 'true',
+                'reversed': 'true',
+            },
+        },
+
+        "fontSize": {
+            "options": [8, 10, 12, 14, 'default', 18, 20, 22],
+            "supportAllValues": "true"
+        },
+
+        'language': 'tr',
+
+        "menuBar": {
+            "isVisible": "true"
+        },
+
+        "link": {
+            "addTargetToExternalLinks": "true",
+            "defaultProtocol": 'https://',
+            "decorators": {
+                "toggleDownloadable": {
+                    "mode": 'manual',
+                    "label": 'Downloadable',
+                    "attributes": {
+                        "download": 'file'
+                    }
+                }
+            }
+        },
+
+        "htmlSupport": {
+            "allow": [
+                {
+                    "name": "/^.*$/,",
+                    "styles": "true",
+                    "attributes": "true",
+                    "classes": "true"
+                }
+            ]
+        },
+
+        "mediaEmbed": {"previewsInData": "true"},
+
+        'simpleUpload': {
+            'uploadUrl': '/ckeditor5/image_upload/',
+        },
+
+        "placeholder": 'İçeriği kopyala ve yapıştır!',
+
+    }
+}
+
+DJANGO_GALLERY_FIELD_CONFIG = {
+    "bootstrap_version": 5,
+    "assets": {
+        "jquery": "https://code.jquery.com/jquery-3.7.1.min.js",
+        "bootstrap_css": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
+        "bootstrap_js": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js",
+        "extra_js": [],
+        "extra_css": [],
+    },
+
+    "thumbnails": {
+        "size": "120x120",
+        "quality": 80
+    },
+
+    "jquery_file_upload_ui_options": {
+        "autoUpload": False,
+        "imageMaxWidth": 1024,
+        "imageMaxHeight": 1024,
+
+    },
+
+    "jquery_file_upload_ui_sortable_options": {
+        "disabled": False,
+        "delay": 300,
+        "animation": 200,
+
+    },
+
+    "prompt_alert_if_changed_on_window_reload": True,
+    "widget_hidden_input_css_class": "django-galleryfield",
+
+}
+
