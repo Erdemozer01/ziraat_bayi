@@ -1,0 +1,28 @@
+{% if messages %}
+    {% for message in messages %}
+
+        <div class="alert alert-{{ message.tags }} alert-dismissible shadow-soft fade show mt-1" role="alert">
+
+            <span class="alert-inner--icon">
+                {% if message.tags == 'error' %}
+                    <span class="bi bi-hand-thumbs-down"></span>
+                {% elif message.tags == 'success' %}
+                    <span class="bi bi-hand-thumbs-up"></span>
+                {% elif message.tags == 'info' %}
+                    <span class="bi bi-info-circle"></span>
+                {% elif message.tags == 'warning' %}
+                    <span class="bi bi-info-circle"></span>
+                {% endif %}
+            </span>
+
+            <span class="alert-inner--text"><strong>{{ message }}</strong></span>
+
+            {% if object_list %}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            {% else %}
+                <a href="{% url 'bayi:anasayfa' %}"><button type="button" class="btn-close"></button></a>
+            {% endif %}
+
+        </div>
+    {% endfor %}
+{% endif %}

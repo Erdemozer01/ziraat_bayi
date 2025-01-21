@@ -20,9 +20,14 @@
 {% block content %}
     <main class="container">
         {% include 'includes/bayi/navbar.html' %}
-        {% include 'includes/bayi/header.html' %}
         {% include 'includes/bayi/subscript.html' %}
         {% include 'includes/bayi/search.html' %}
+        {% if messages %}
+            {% include 'widgets/messages.html' %}
+        {% else %}
+            {% include 'includes/bayi/header.html' %}
+        {% endif %}
+
         {% include 'includes/bayi/cards.html' %}
         {% include 'includes/bayi/footer.html' %}
     </main>
