@@ -12,8 +12,8 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="searchbarFormControlInput1" class="form-label">Ara</label>
-                        <input type="text" class="form-control" id="searchbarFormControlInput1"
-                               placeholder="Kategori veya Başlık">
+                        <input type="text" class="form-control" id="searchbarFormControlInput1" name="ara" value="{{ request.GET.ara }}"
+                               placeholder="Kategori veya Başlık" required>
                     </div>
                 </div>
                 <div class="modal-footer">
