@@ -1,5 +1,4 @@
 {% extends 'layout/base.html' %}
-
 {% load static %}
 
 {% block title %}Dashboard{% endblock %}
@@ -26,7 +25,9 @@
         <div class="row">
             {% include 'includes/dashboard/sidebar.html' %}
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+
                     <h1 class="h2">Dashboard</h1>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group me-2">
@@ -40,8 +41,8 @@
                                 <use xlink:href="#calendar3"/>
                             </svg>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                <li><a class="dropdown-item" href="#">Bu Hafta</a></li>
+                                <li><a class="dropdown-item" href="#">Bu ay</a></li>
                                 <li><a class="dropdown-item" href="#">Something else here</a></li>
                             </ul>
                         </button>
