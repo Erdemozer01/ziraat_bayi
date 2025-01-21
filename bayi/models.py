@@ -33,7 +33,10 @@ class Header(models.Model):
 
 class ProductCategory(models.Model):
     name = models.CharField(max_length=100, unique=True, db_index=True, verbose_name='Kategori')
+
     created = models.DateTimeField(auto_now_add=True, verbose_name='Oluşturulma Tarihi')
+
+    slug = AutoSlugField(populate_from='name', unique_with='created', default='')
 
     def __str__(self):
         return self.name
