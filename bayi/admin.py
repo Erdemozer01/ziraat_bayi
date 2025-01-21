@@ -4,7 +4,7 @@ from .models import Product, ProductCategory, Header, SettingsSite
 
 @admin.register(SettingsSite)
 class SettingsSiteAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'created', 'updated')
+    list_display = ('name', 'created', 'updated')
 
     def has_add_permission(self, request):
         if SettingsSite.objects.count() == 0:

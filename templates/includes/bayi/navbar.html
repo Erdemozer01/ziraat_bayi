@@ -1,5 +1,7 @@
 {% load settings static %}
 {% get_setting as obj %}
+{% get_product_category as category_list %}
+
 <div class="container">
     <header class="border-bottom lh-1 py-3">
         <div class="row flex-nowrap justify-content-between align-items-center">
@@ -10,9 +12,8 @@
                 <a href="/" style="text-decoration: none;">
                     <img class="rounded-1" src="{% static 'assets/img/favicons/favicon.png' %}" alt="" width="50" height="50">
                     <div style="margin-top: 1%">
-                        <small>{{ obj.name }} Tarım</small>
+                        <small>{{ obj.name.title }}</small>
                     </div>
-
                 </a>
             </div>
             <div class="col-4 d-flex justify-content-end align-items-center">
@@ -35,18 +36,24 @@
 
     <div class="nav-scroller py-1 mb-3 border-bottom">
         <nav class="nav nav-underline justify-content-between">
-            <a class="nav-item nav-link link-body-emphasis active" href="#">World</a>
-            <a class="nav-item nav-link link-body-emphasis" href="#">U.S.</a>
-            <a class="nav-item nav-link link-body-emphasis" href="#">Technology</a>
-            <a class="nav-item nav-link link-body-emphasis" href="#">Design</a>
-            <a class="nav-item nav-link link-body-emphasis" href="#">Culture</a>
-            <a class="nav-item nav-link link-body-emphasis" href="#">Business</a>
-            <a class="nav-item nav-link link-body-emphasis" href="#">Politics</a>
-            <a class="nav-item nav-link link-body-emphasis" href="#">Opinion</a>
-            <a class="nav-item nav-link link-body-emphasis" href="#">Science</a>
-            <a class="nav-item nav-link link-body-emphasis" href="#">Health</a>
-            <a class="nav-item nav-link link-body-emphasis" href="#">Style</a>
-            <a class="nav-item nav-link link-body-emphasis" href="#">Travel</a>
+            {% if category_list %}
+                {% for category in category_list %}
+                    <a class="nav-item nav-link link-body-emphasis {% if category.name in request.path %}active{% endif %}" href="#">{{ category.name }}</a>
+                {% endfor %}
+            {% else %}
+                <a class="nav-item nav-link link-body-emphasis active" href="#">World</a>
+                <a class="nav-item nav-link link-body-emphasis" href="#">U.S.</a>
+                <a class="nav-item nav-link link-body-emphasis" href="#">Technology</a>
+                <a class="nav-item nav-link link-body-emphasis" href="#">Design</a>
+                <a class="nav-item nav-link link-body-emphasis" href="#">Culture</a>
+                <a class="nav-item nav-link link-body-emphasis" href="#">Business</a>
+                <a class="nav-item nav-link link-body-emphasis" href="#">Politics</a>
+                <a class="nav-item nav-link link-body-emphasis" href="#">Opinion</a>
+                <a class="nav-item nav-link link-body-emphasis" href="#">Science</a>
+                <a class="nav-item nav-link link-body-emphasis" href="#">Health</a>
+                <a class="nav-item nav-link link-body-emphasis" href="#">Style</a>
+                <a class="nav-item nav-link link-body-emphasis" href="#">Travel</a>
+            {% endif %}
         </nav>
     </div>
 </div>

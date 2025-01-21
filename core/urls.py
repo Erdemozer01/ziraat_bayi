@@ -25,5 +25,5 @@ try:
     admin.site.site_header = site.name + ' Yönetici Paneli'
     admin.site.index_title = site.name + ' Yönetici Paneli'
     admin.site.name = site.name + ' Yönetici Paneli'
-except SettingsSite.DoesNotExist:
+except:
     pass

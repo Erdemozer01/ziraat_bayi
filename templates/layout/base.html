@@ -1,4 +1,5 @@
-{% load static django_bootstrap5 %}
+{% load static django_bootstrap5 settings %}
+{% get_setting as obj %}
 
 <!doctype html>
 <html lang="tr" data-bs-theme="auto">
@@ -11,12 +12,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="author" content="Mehmet Erdem ÖZER">
     <meta name="generator" content="Hugo 0.122.0">
 
     <title>{% block title %}{% endblock %}</title>
-
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/dashboard/">
 
     {% include 'includes/favicons.html' %}
 

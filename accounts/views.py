@@ -20,9 +20,14 @@ class LoginView(views.LoginView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        site = SettingsSite.objects.latest('created')
+
+        try:
+            site = SettingsSite.objects.latest('created').name
+        except SettingsSite.DoesNotExist:
+            site = None
+
         context['site'] = get_current_site(self.request)
-        context['site_name'] = site.name
+        context['site_name'] = site
         return context
 
 

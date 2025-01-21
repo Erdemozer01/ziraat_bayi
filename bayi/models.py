@@ -4,9 +4,8 @@ from django_ckeditor_5.fields import CKEditor5Field
 
 
 class SettingsSite(models.Model):
-    name = models.CharField(max_length=10, unique=True, db_index=True, verbose_name="Site Adı")
-    email = models.EmailField(blank=True, verbose_name="Email Adres")
-    email_password = models.CharField(max_length=100, blank=True, verbose_name="Email Şifresi")
+    name = models.CharField(max_length=50, unique=True, verbose_name="Site Adı")
+
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -19,7 +18,7 @@ class SettingsSite(models.Model):
 
 
 class Header(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, verbose_name='Başlık')
     content = CKEditor5Field(config_name='extends', verbose_name='İçerik')
     slug = AutoSlugField(populate_from='title')
     created = models.DateTimeField(auto_now_add=True, verbose_name='Oluşturulma Tarihi')
@@ -45,13 +44,14 @@ class ProductCategory(models.Model):
 
 
 class Product(models.Model):
-    category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, verbose_name='Ürün Kategorisi')
+    category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, verbose_name='Ürün Kategorisi',
+                                 related_name='categories')
     image = models.ImageField(upload_to='product/')
     name = models.CharField(max_length=100, verbose_name='Ürün adı')
     content = CKEditor5Field(config_name='extends', verbose_name='İçerik')
 
     stock = models.PositiveIntegerField(default=0, verbose_name='Stok')
-    price = models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Birim Fiyat')
+    price = models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Birim Fiyat', blank=True, null=True)
     ordered = models.PositiveIntegerField(verbose_name='Satış adeti', default=0, db_index=True)
     is_stock = models.BooleanField(default=True, verbose_name='Stokta var mı ?')
 
@@ -64,6 +64,3 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Ürün'
         verbose_name_plural = 'Ürünler'
-
-
-
