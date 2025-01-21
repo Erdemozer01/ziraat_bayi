@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
                 ('remain', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Kalan tutar')),
                 ('is_loan', models.BooleanField(default=False, verbose_name='Borçlu ?')),
                 ('date', models.DateField(verbose_name='Satın aldığı tarih')),
-                ('customer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Müşteri')),
+                ('accounts', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Müşteri')),
             ],
             options={
                 'verbose_name': 'Müşteri',

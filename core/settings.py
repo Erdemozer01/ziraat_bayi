@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django_ckeditor_5',
     'galleryfield',
     'sorl.thumbnail',
+    'accounts.apps.AccountsConfig'
 ]
 
 MIDDLEWARE = [
@@ -121,10 +122,10 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / 'staticfiles/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'staticfiles/',
+    BASE_DIR / 'static/',
 ]
 
 STATICFILES_FINDERS = [
@@ -133,7 +134,7 @@ STATICFILES_FINDERS = [
 ]
 
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
