@@ -67,3 +67,11 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Ürün'
         verbose_name_plural = 'Ürünler'
+
+
+class SubscriptModel(models.Model):
+    email = models.EmailField(verbose_name='Email adresini giriniz')
+
+    class Meta:
+        verbose_name = "Abone"
+        verbose_name_plural = "Aboneler"

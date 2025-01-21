@@ -8,12 +8,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             
-            <form action="" method="get">
+            <form action="{% url 'bayi:abone_ol' %}" method="get">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">Email Adres</label>
                         <input type="email" class="form-control" id="exampleFormControlInput1"
-                               placeholder="name@example.com">
+                               placeholder="name@example.com" name="email" value="{{request.GET.email}}" required>
                     </div>
                 </div>
                 <div class="modal-footer">

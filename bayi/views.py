@@ -1,6 +1,7 @@
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.views import generic
-from .models import ProductCategory, Product
+from .models import ProductCategory, Product, SubscriptModel
 from django.contrib import messages
 
 
@@ -28,3 +29,14 @@ class ProductListView(generic.ListView):
             object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name__icontains=ara))
             messages.success(self.request, f'{len(object_list)} ürün bulundu')
         return object_list
+
+
+def SubscriberView(request):
+    email = request.GET.get('email', None)
+    if SubscriptModel.objects.filter(email=email).exists():
+        messages.info(request, "Zaten abonesiniz")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    else:
+        SubscriptModel.objects.create(email=email)
+        messages.success(request, "Bültenimize abone olduğunuz için teşekkür ederiz.")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

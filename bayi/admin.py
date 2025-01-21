@@ -1,5 +1,13 @@
 from django.contrib import admin
-from .models import Product, ProductCategory, Header, SettingsSite
+from .models import Product, ProductCategory, Header, SettingsSite, SubscriptModel
+
+
+@admin.register(SubscriptModel)
+class SubscriptAdmin(admin.ModelAdmin):
+    list_display = ('email',)
+
+    def has_add_permission(self, request):
+        return False
 
 
 @admin.register(SettingsSite)
