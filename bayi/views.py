@@ -25,6 +25,6 @@ class ProductListView(generic.ListView):
         object_list = Product.objects.all()
         ara = self.request.GET.get('ara', None)
         if ara:
-            object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name=ara))
+            object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name__icontains=ara))
             messages.success(self.request, f'{len(object_list)} ürün bulundu')
         return object_list
