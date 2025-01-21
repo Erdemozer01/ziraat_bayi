@@ -1,4 +1,4 @@
-{% load settings %}
+{% load settings static %}
 {% get_setting as obj %}
 <div class="container">
     <header class="border-bottom lh-1 py-3">
@@ -7,7 +7,13 @@
                 <a class="link-secondary" href="#" data-bs-toggle="modal" data-bs-target="#subscripts">Abone ol</a>
             </div>
             <div class="col-4 text-center">
-                <a class="blog-header-logo text-body-emphasis text-decoration-none" href="/">{{ obj.name }}</a>
+                <a href="/" style="text-decoration: none;">
+                    <img src="{% static 'assets/img/favicons/favicon.png' %}" alt="" width="50" height="50">
+                    <div >
+                        <small>{{ obj.name }} Tarım</small>
+                    </div>
+
+                </a>
             </div>
             <div class="col-4 d-flex justify-content-end align-items-center">
                 <a class="link-secondary" href="#" data-bs-toggle="modal" data-bs-target="#searchbar">
