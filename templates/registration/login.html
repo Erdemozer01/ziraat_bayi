@@ -6,12 +6,6 @@
     {{ form.media }}
 {% endblock %}
 
-{% block branding %}
-    <div id="site-name"><a href="{% url 'bayi:anasayfa' %}">{{ site_name }}</a></div>
-    {% if user.is_anonymous %}
-        {% include "admin/color_theme_toggle.html" %}
-    {% endif %}
-{% endblock %}
 
 {% block bodyclass %}{{ block.super }} login{% endblock %}
 
@@ -74,7 +68,7 @@
             {% endif %}
             <div class="submit-row">
                 <input type="submit" value="{% translate 'Log in' %}">
-                <a href="#">
+                <a href="{% url 'accounts:register' %}">
                     <input type="button" value="{% translate 'Üye ol' %}">
                 </a>
             </div>

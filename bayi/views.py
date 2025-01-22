@@ -31,12 +31,19 @@ class ProductListView(generic.ListView):
         return object_list
 
 
-def SubscriberView(request):
-    email = request.GET.get('email', None)
-    if SubscriptModel.objects.filter(email=email).exists():
-        messages.info(request, "Zaten abonesiniz")
+class SubscriptView(generic.View):
+
+    def get(self, request):
+        email = request.GET.get('email', None)
+        if SubscriptModel.objects.filter(email=email).exists():
+            messages.info(request, "Zaten abonesiniz")
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        else:
+            SubscriptModel.objects.create(email=email)
+            messages.success(request, "Bültenimize abone olduğunuz için teşekkür ederiz.")
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-    else:
-        SubscriptModel.objects.create(email=email)
-        messages.success(request, "Bültenimize abone olduğunuz için teşekkür ederiz.")
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+class ProductDetailView(generic.DetailView):
+    model = Product
+    template_name = 'pages/detail.html'

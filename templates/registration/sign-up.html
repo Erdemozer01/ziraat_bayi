@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block branding %}
-    <div id="site-name"><a href="{% url 'base:home' %}">{{ site_name }}</a></div>
+    <div id="site-name"><a href="{% url 'bayi:anasayfa' %}">{{ site_name }}</a></div>
     {% if user.is_anonymous %}
         {% include "admin/color_theme_toggle.html" %}
     {% endif %}
@@ -70,7 +70,6 @@
             </div>
             <div class="submit-row">
                 <a href="{% url 'password_reset' %}">Şifremi unuttum</a>
-                <a href="{% url 'base:home' %}" style="margin-left: 5%">Anasayfa</a>
             </div>
         </form>
 

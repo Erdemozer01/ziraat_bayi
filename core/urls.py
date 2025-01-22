@@ -21,9 +21,9 @@ urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 try:
     site = SettingsSite.objects.latest('created')
-    admin.site.site_title = site.name + ' Yönetici Paneli'
-    admin.site.site_header = site.name + ' Yönetici Paneli'
-    admin.site.index_title = site.name + ' Yönetici Paneli'
-    admin.site.name = site.name + ' Yönetici Paneli'
+    admin.site.site_title = site.name
+    admin.site.site_header = site.name
+    admin.site.index_title = site.name
+    admin.site.name = site.name
 except:
     pass

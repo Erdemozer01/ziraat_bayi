@@ -6,13 +6,6 @@
 
 {% block nav-sidebar %}{% endblock %}
 
-{% block branding %}
-    <div id="site-name"><a href="{% url 'bayi:anasayfa' %}">Ziraat </a></div>
-    {% if user.is_anonymous %}
-        {% include "admin/color_theme_toggle.html" %}
-    {% endif %}
-{% endblock %}
-
 {% block content %}
 
     <p>{% translate "Thanks for spending some quality time with the web site today." %}</p>
