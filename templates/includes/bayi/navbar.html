@@ -11,14 +11,15 @@
         </button>
         <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasNavbar2"
              aria-labelledby="offcanvasNavbar2Label">
+
             <div class="offcanvas-header">
                 {% if user.is_authenticated %}
-                    <h5 class="offcanvas-title" id="offcanvasNavbar2Label">Menü</h5>
+                    <h5 class="offcanvas-title" id="offcanvasNavbar2Label">Hoşgeldiniz {{ user }}</h5>
                 {% endif %}
-
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
                         aria-label="Close"></button>
             </div>
+
             <div class="offcanvas-body">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                     <li class="nav-item">
@@ -27,6 +28,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#subscripts">Abone ol</a>
                     </li>
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                            aria-expanded="false">
@@ -34,22 +36,29 @@
                         </a>
                         <ul class="dropdown-menu">
                             {% if user.is_authenticated %}
-                                <li><a class="dropdown-item" href="#">Profil</a></li>
+                                <li><a class="dropdown-item" href="#">Dashboard</a></li>
                             {% else %}
                                 <li><a class="dropdown-item" href="{% url 'login' %}">Giriş / Üye ol</a></li>
                             {% endif %}
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <form action="{% url 'logout' %}" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" class="dropdown-item">Çıkış</button>
-                                </form>
-                            </li>
+                            {% if user.is_superuser %}
+                                <li><a class="dropdown-item" href="{% url 'admin:index' %}bayi/product/add/">Ürün
+                                    Ekle</a></li>
+                                <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin Paneli</a></li>
+                            {% endif %}
+                            {% if user.is_authenticated %}
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <form action="{% url 'logout' %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item">Çıkış</button>
+                                    </form>
+                                </li>
+                            {% endif %}
                         </ul>
                     </li>
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                            aria-expanded="false">
@@ -57,7 +66,9 @@
                         </a>
                         <ul class="dropdown-menu">
                             {% for category in category_list %}
-                            	<li><a class="dropdown-item" href="{% url 'bayi:category_list' category.slug %}">{{ category.name.title }}</a></li>
+                                <li><a class="dropdown-item"
+                                       href="{% url 'bayi:category_list' category.slug %}">{{ category.name.title }}</a>
+                                </li>
                             {% endfor %}
                         </ul>
                     </li>
