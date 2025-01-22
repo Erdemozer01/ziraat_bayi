@@ -3,13 +3,10 @@
 {% if object_list %}
     <h3 class="pb-4 mb-4 fst-italic border-bottom" style="margin-top: 3%">
         {% if request.path == '/' %}
-
             Tüm Ürünler
-
         {% else %}
             {{ request.get_full_path|breadcrumbs|title }}
         {% endif %}
-
     </h3>
     <div class="row mb-2">
 
