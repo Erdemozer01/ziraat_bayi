@@ -40,8 +40,13 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'stock', 'price', 'ordered', 'is_stock')
-    list_filter = ('name', 'price',)
+    list_filter = ('is_stock',)
     search_fields = ('name', 'category__name')
+    search_help_text = 'Başlık yada Kategori adı'
+    list_editable = ('price',)
+    readonly_fields = ('created', 'is_stock')
+
+
 
 
 

@@ -10,7 +10,7 @@ class CategoriesListView(generic.ListView):
     template_name = 'pages/bayi.html'
 
     def get_queryset(self):
-        object_list = Product.objects.filter(category__slug=self.kwargs['slug'])
+        object_list = Product.objects.filter(category__slug=self.kwargs['slug'], is_stock=True)
         ara = self.request.GET.get('ara', None)
         if ara:
             object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name=ara))
@@ -23,7 +23,7 @@ class ProductListView(generic.ListView):
     template_name = 'pages/bayi.html'
 
     def get_queryset(self):
-        object_list = Product.objects.all()
+        object_list = Product.objects.filter(is_stock=True)
         ara = self.request.GET.get('ara', None)
         if ara:
             object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name__icontains=ara))
@@ -48,10 +48,23 @@ class ProductDetailView(generic.DetailView):
     model = Product
     template_name = 'pages/detail.html'
 
+    def get_queryset(self):
+        return Product.objects.filter(is_stock=True)
+
     def get(self, request, *args, **kwargs):
         ara = request.GET.get('ara')
         if ara:
             return HttpResponseRedirect('/?ara={}'.format(ara))
         else:
             return super().get(request, *args, **kwargs)
-            
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        products = Product.objects.filter(
+            Q(category__slug=self.get_object().category.slug) |
+            Q(category__name__icontains=self.get_object().category.name) |
+            Q(price=self.get_object().price)
+        )
+        context['recent_list'] = products.exclude(pk=self.get_object().pk).order_by('-created')[:10]
+        context['new_products'] = Product.objects.filter(is_stock=True).order_by('-created')[:10]
+        return context
