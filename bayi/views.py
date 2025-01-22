@@ -47,3 +47,11 @@ class SubscriptView(generic.View):
 class ProductDetailView(generic.DetailView):
     model = Product
     template_name = 'pages/detail.html'
+
+    def get(self, request, *args, **kwargs):
+        ara = request.GET.get('ara')
+        if ara:
+            return HttpResponseRedirect('/?ara={}'.format(ara))
+        else:
+            return super().get(request, *args, **kwargs)
+            

@@ -1,5 +1,5 @@
 {% extends 'layout/base.html' %}
-{% load static %}
+{% load static thumbnail %}
 {% block title %}{{ object.name }}{% endblock %}
 
 {% block dark_mod %}
@@ -32,6 +32,12 @@
                 {% elif object.stock == 0 %}
                     <p class="lead my-3">Stok Durumu : Stokta yok</p>
                 {% endif %}
+                {% if request.user.is_staff %}
+                    <p class="lead mb-0">
+                        <a href="{% url 'admin:index' %}bayi/product/{{ object.pk }}/change/"
+                           class="text-body-emphasis fw-bold" target="_blank">İçeriği düzenle</a>
+                    </p>
+                {% endif %}
             </div>
         </div>
         <div class="row g-5" style="margin-top: 5%">
@@ -41,8 +47,12 @@
                 </h3>
 
                 <article class="blog-post">
-                    <h2 class="display-5 link-body-emphasis mb-1">{{ object.name.title }}</h2>
-                    <p class="blog-post-meta">{{ object.created.date }}</p>
+                    <h2 class="display-5 link-body-emphasis mb-5">{{ object.name.title }}</h2>
+
+                    {% thumbnail object.image "1920x1080" padding=True quality=100 crop="center" as im %}
+                        <img src="{{ im.url }}" class="img-fluid rounded-end mb-5"
+                             alt="{{ object.title }}">
+                    {% endthumbnail %}
                     {{ object.content|safe }}
                 </article>
             </div>
