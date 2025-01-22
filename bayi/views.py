@@ -10,6 +10,7 @@ class CategoriesListView(generic.ListView):
     template_name = 'pages/bayi.html'
 
     def get_queryset(self):
+
         object_list = Product.objects.filter(category__slug=self.kwargs['slug'], is_stock=True)
         ara = self.request.GET.get('ara', None)
         if ara:
