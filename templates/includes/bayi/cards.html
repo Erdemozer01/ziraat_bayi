@@ -1,7 +1,18 @@
-{% load thumbnail %}
+{% load thumbnail product %}
 
 {% if object_list %}
+    <h3 class="pb-4 mb-4 fst-italic border-bottom" style="margin-top: 3%">
+        {% if request.path == '/' %}
+
+            Tüm Ürünler
+
+        {% else %}
+            {{ request.get_full_path|breadcrumbs|title }}
+        {% endif %}
+
+    </h3>
     <div class="row mb-2">
+
         {% for object in object_list %}
             <div class="col-md-6">
                 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
@@ -9,7 +20,8 @@
                         <strong class="d-inline-block mb-2 text-primary-emphasis">{{ object.category.name.title }}</strong>
                         <h3 class="mb-0">{{ object.name }}</h3>
                         <p class="card-text mb-auto">{{ object.price }} TL</p>
-                        <a href="{% url 'bayi:product_detail' object.pk object.category.slug object.name|slugify %}" class="icon-link gap-1 icon-link-hover stretched-link">
+                        <a href="{% url 'bayi:product_detail' object.pk object.category.slug object.name|slugify %}"
+                           class="icon-link gap-1 icon-link-hover stretched-link">
                             Ayrıntılar
                             <svg class="bi">
                                 <use xlink:href="#chevron-right"/>
