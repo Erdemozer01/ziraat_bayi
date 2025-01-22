@@ -25,8 +25,30 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/">Anasayfa</a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#subscripts">Abone ol</a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Kategoriler
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% for category in category_list %}
+                                <li>
+                                    <a class="dropdown-item"
+                                       href="{% url 'bayi:category_list' category.slug %}">{{ category.name.title }}</a>
+                                </li>
+                            {% endfor %}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/">Tümü</a>
+                            </li>
+                        </ul>
                     </li>
 
                     <li class="nav-item dropdown">
@@ -36,9 +58,13 @@
                         </a>
                         <ul class="dropdown-menu">
                             {% if user.is_authenticated %}
-                                <li><a class="dropdown-item" href="#">Dashboard</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'accounts:dashboard' user %}">Dashboard</a>
+                                </li>
                             {% else %}
-                                <li><a class="dropdown-item" href="{% url 'login' %}">Giriş / Üye ol</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'login' %}">Giriş / Üye ol</a>
+                                </li>
                             {% endif %}
                             {% if user.is_superuser %}
                                 <li><a class="dropdown-item" href="{% url 'admin:index' %}bayi/product/add/">Ürün
@@ -59,19 +85,6 @@
                         </ul>
                     </li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                           aria-expanded="false">
-                            Kategoriler
-                        </a>
-                        <ul class="dropdown-menu">
-                            {% for category in category_list %}
-                                <li><a class="dropdown-item"
-                                       href="{% url 'bayi:category_list' category.slug %}">{{ category.name.title }}</a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </li>
                 </ul>
                 <form class="d-flex mt-3 mt-lg-0" role="search" method="get" action="{% url 'bayi:anasayfa' %}">
                     <input class="form-control me-2" type="search" placeholder="Kategori veya Başlık"
