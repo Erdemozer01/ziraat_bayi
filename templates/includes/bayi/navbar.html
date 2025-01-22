@@ -1,44 +1,60 @@
 {% load settings static product %}
 {% get_setting as obj %}
 {% get_product_category as category_list %}
-
-<div class="container">
-    <header class="border-bottom lh-1 py-3">
-        <div class="row flex-nowrap justify-content-between align-items-center">
-            <div class="col-4 pt-1">
-                <a class="link-secondary" href="#" data-bs-toggle="modal" data-bs-target="#subscripts">Abone ol</a>
-            </div>
-            <div class="col-4 text-center">
-                <a href="/" style="text-decoration: none;">
-                    <img class="rounded-1" src="{% static 'assets/img/favicons/favicon.png' %}" alt="" width="50" height="50">
-                    <div style="margin-top: 1%">
-                        <small>{{ obj.name.title }}</small>
-                    </div>
-                </a>
-            </div>
-            <div class="col-4 d-flex justify-content-end align-items-center">
-                <a class="link-secondary" href="#" data-bs-toggle="modal" data-bs-target="#searchbar">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
-                         stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img"
-                         viewBox="0 0 24 24"><title>Search</title>
-                        <circle cx="10.5" cy="10.5" r="7.5"/>
-                        <path d="M21 21l-5.2-5.2"/>
-                    </svg>
-                </a>
-                {% if request.user.is_authenticated %}
-                    <a class="btn" href="{% url 'accounts:dashboard' %}"><i class="bi bi-people"></i></a>
-                {% else %}
-                    <a class="btn btn-sm btn-outline-secondary" href="{% url 'accounts:login' %}">Giriş</a>
-                {% endif %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded" aria-label="Offcanvas navbar large" style="margin-top: 1%">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">{{ obj.name.title }}</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar2"
+                    aria-controls="offcanvasNavbar2" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasNavbar2"
+                 aria-labelledby="offcanvasNavbar2Label">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasNavbar2Label">Offcanvas</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                            aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/">Anasayfa</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Link</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                Dropdown
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <form class="d-flex mt-3 mt-lg-0" role="search" method="get" action="{% url 'bayi:anasayfa' %}">
+                        <input class="form-control me-2" type="search" placeholder="Kategori veya Başlık" aria-label="Search" name="ara" value="{{request.GET.ara}}">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
             </div>
         </div>
-    </header>
+    </nav>
+<div class="container">
+
 
     <div class="nav-scroller py-1 mb-3 border-bottom">
         <nav class="nav nav-underline justify-content-between">
             {% if category_list %}
                 {% for category in category_list %}
-                    <a class="nav-item nav-link link-body-emphasis {% if category.slug in request.path %}active{% endif %}" href="{% url 'bayi:category_list' category.slug %}">{{ category.name.title }}</a>
+                    <a class="nav-item nav-link link-body-emphasis {% if category.slug in request.path %}active{% endif %}"
+                       href="{% url 'bayi:category_list' category.slug %}">{{ category.name.title }}</a>
                 {% endfor %}
             {% else %}
                 <a class="nav-item nav-link link-body-emphasis active" href="#">World</a>
