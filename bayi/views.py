@@ -120,7 +120,7 @@ class ShoppingListView(generic.ListView):
             messages.info(request, 'Üye olun yada giriş yapın')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         try:
-            cart = Cart.objects.get(user=self.request.user)
+            cart = Cart.objects.get(user=self.request.user, session_key=request.session.session_key)
         except Cart.DoesNotExist:
             messages.info(self.request, 'Sepetiniz Boş')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
