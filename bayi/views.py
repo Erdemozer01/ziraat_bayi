@@ -136,6 +136,7 @@ class ShoppingListView(generic.ListView):
         context = super().get_context_data(**kwargs)
         cart = Cart.objects.get(user=self.request.user, session_key=self.request.session.session_key)
         context['cart'] = cart
+        context['cart_items'] = CartItem.objects.filter(cart=cart)
         return context
 
 

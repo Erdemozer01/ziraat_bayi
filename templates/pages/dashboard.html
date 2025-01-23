@@ -21,7 +21,9 @@
 
     <div class="container-fluid">
         <div class="row">
+
             {% include 'includes/dashboard/sidebar.html' %}
+
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -81,7 +83,7 @@
                         </thead>
                         <tbody>
 
-                        {% for obj in cartitem_list %}
+                        {% for obj in cart_items %}
                             <tr>
                                 <td>{{ obj.product }}</td>
                                 <td>{{ obj.quantity }}</td>
