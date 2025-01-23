@@ -54,7 +54,7 @@ class Product(models.Model):
     content = CKEditor5Field(config_name='extends', verbose_name='İçerik')
 
     stock = models.PositiveIntegerField(default=0, verbose_name='Stok')
-    price = models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Birim Fiyat', blank=True, null=True)
+    price = models.FloatField(verbose_name='Fiyat')
     ordered = models.PositiveIntegerField(verbose_name='Satış adeti', default=0, db_index=True)
     is_stock = models.BooleanField(default=True, verbose_name='Stokta var mı ?')
 
@@ -67,6 +67,34 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Ürün'
         verbose_name_plural = 'Ürünler'
+
+
+class Cart(models.Model):
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='cart', verbose_name='Müşteri')
+    session_key = models.CharField(max_length=100, verbose_name='id numarası')
+    total = models.FloatField(default=0)
+    is_ordered = models.BooleanField(default=False)
+
+    created = models.DateTimeField(auto_now_add=True, verbose_name='Oluşturulma Tarihi')
+    order_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username + ' ' + self.session_key
+
+    class Meta:
+        verbose_name = 'Sepet'
+        verbose_name_plural = 'Sepetler'
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_item', verbose_name='Sepet')
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='product_item', verbose_name='Ürün')
+    quantity = models.PositiveIntegerField(default=1, verbose_name='Miktar')
+    sub_total = models.FloatField(default=0, verbose_name='Ara Toplam')
+
+    class Meta:
+        verbose_name = 'Sepetteki Ürün'
+        verbose_name_plural = 'Sepetteki Ürünler'
 
 
 class SubscriptModel(models.Model):

@@ -1,0 +1,73 @@
+{% extends 'layout/base.html' %}
+{% load static django_bootstrap5 %}
+{% block title %}
+    Checkout
+{% endblock %}
+
+{% block content %}
+    <div class="container" style="max-width: 960px; margin-bottom: 5%">
+        <main>
+            <div class="py-5 text-center">
+                <a href="/">
+                    <img class="d-block mx-auto mb-4" src="{% static 'assets/img/favicons/favicon.png' %}" alt="" width="72" height="72">
+                </a>
+                <h2>Sipariş</h2>
+            </div>
+
+            <div class="row g-5">
+                <div class="col-md-5 col-lg-4 order-md-last">
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-primary">Sepetiniz</span>
+                        <span class="badge bg-primary rounded-pill">{{ quantity }}</span>
+                    </h4>
+                    <ul class="list-group mb-3">
+                        {% for cart in cart_items %}
+                            <li class="list-group-item d-flex justify-content-between lh-sm">
+                                <div>
+                                    <h6 class="my-0">{{ cart.product.name }}</h6>
+                                    <small class="text-body-secondary">{{ cart.quantity }} adet</small>
+                                </div>
+                                <span class="text-body-secondary">{{ cart.sub_total }}</span>
+                            </li>
+                        {% endfor %}
+
+                        <li class="list-group-item d-flex justify-content-between bg-body-tertiary">
+                            <div class="text-success">
+                                <h6 class="my-0">Promo code</h6>
+                                <small>EXAMPLECODE</small>
+                            </div>
+                            <span class="text-success">−$5</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Total TL</span>
+                            <strong>{{ cart.total }}</strong>
+                        </li>
+                    </ul>
+
+                    <form class="card p-2">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Promosyon Kodu">
+                            <button type="submit" class="btn btn-secondary">İndirim</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-md-7 col-lg-8">
+                    <h4 class="mb-3">Bilgileriniz</h4>
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+                            {% bootstrap_form form %}
+                            {% bootstrap_form form2 %}
+                        </div>
+
+                        <hr class="my-4">
+
+                        <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+{% endblock %}
