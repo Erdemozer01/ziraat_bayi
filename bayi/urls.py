@@ -11,5 +11,6 @@ urlpatterns = [
     path('ayrıntılar/<pk>/<slug>/<name>/', views.ProductDetailView.as_view(), name='product_detail'),
     path('add-cart/<pk>/', views.CartItemsAddView, name='add_cart'),
     path('sepetim/<user>/', views.ShoppingListView.as_view(), name='sepetim'),
-    path('siparis-özeti/<user>/<session_key>/', views.checkout, name='checkout'),
+    path('siparis-özeti/<user>/<cart_number>/', views.checkout, name='checkout'),
+    path('borc-öde/<user>/<cart_number>/', views.BorcOdeme, name='borc_odeme'),
 ]

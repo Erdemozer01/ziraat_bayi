@@ -44,7 +44,7 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ('name', 'category__name')
     search_help_text = 'Başlık yada Kategori adı'
     list_editable = ('price',)
-    readonly_fields = ('created', 'is_stock')
+    readonly_fields = ('created', 'is_stock', 'ordered')
 
 
 

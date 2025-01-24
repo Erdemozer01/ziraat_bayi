@@ -145,13 +145,14 @@
                 </ul>
             {% else %}
                 <ul class="nav flex-column">
+
                     <li class="nav-item">
                         <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page"
-                           href="{% url 'accounts:dashboard' user %}">
+                           href="/">
                             <svg class="bi">
-                                <use xlink:href="#house-fill"/>
+                                <<use xlink:href="#house-fill"/>
                             </svg>
-                            Dashboard
+                            Anasayfa
                         </a>
                     </li>
                     <li class="nav-item">
@@ -163,7 +164,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2" href="#">
+                        <a class="nav-link d-flex align-items-center gap-2" href="{% url 'accounts:my_information' user.pk user %}">
                             <svg class="bi">
                                 <use xlink:href="#people"/>
                             </svg>
@@ -172,7 +173,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2" href="#">
+                        <a class="nav-link d-flex align-items-center gap-2" href="{% url 'bayi:sepetim' user %}">
                             <svg class="bi">
                                 <use xlink:href="#cart"/>
                             </svg>

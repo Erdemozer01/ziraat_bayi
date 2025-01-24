@@ -1,5 +1,6 @@
 from django.db import models
 from autoslug.fields import AutoSlugField
+from django.utils import timezone
 from django_ckeditor_5.fields import CKEditor5Field
 
 
@@ -71,15 +72,15 @@ class Product(models.Model):
 
 class Cart(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='cart', verbose_name='Müşteri')
-    session_key = models.CharField(max_length=100, verbose_name='id numarası')
+    cart_number = models.CharField(max_length=100, verbose_name='Sepet ID')
     total = models.FloatField(default=0)
-    is_ordered = models.BooleanField(default=False)
+    is_ordered = models.BooleanField(default=False, verbose_name='Sipariş verildi mi ?')
 
     created = models.DateTimeField(auto_now_add=True, verbose_name='Oluşturulma Tarihi')
-    order_date = models.DateTimeField(auto_now_add=True)
+    last_date = models.DateField(verbose_name='Son ödeme tarihi', default=timezone.now)
 
     def __str__(self):
-        return self.user.username + ' ' + self.session_key
+        return self.user.username + ' ' + self.cart_number
 
     class Meta:
         verbose_name = 'Sepet'

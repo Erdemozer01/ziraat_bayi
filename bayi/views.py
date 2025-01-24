@@ -1,9 +1,10 @@
 import uuid
 
 from django.db import models
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db.models import Q
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect
+from django.utils import timezone
 from django.views import generic
 from decimal import Decimal
 
@@ -88,14 +89,11 @@ def CartItemsAddView(request, pk):
 
     if quantity:
         try:
-            cart = Cart.objects.get(user=request.user, session_key=request.session.session_key)
+            cart = Cart.objects.get(user=request.user)
         except Cart.DoesNotExist:
-            cart = Cart.objects.create(user=request.user, session_key=request.session.session_key)
-
+            cart = Cart.objects.create(user=request.user, cart_number=uuid.uuid4())
 
         quantity = float(quantity)
-        product.stock -= int(quantity)
-        product.save()
 
         try:
             cart_item = CartItem.objects.get(cart=cart, product=product)
@@ -106,6 +104,7 @@ def CartItemsAddView(request, pk):
             CartItem.objects.create(cart=cart, product=product, quantity=quantity, sub_total=product.price * quantity)
 
         cart.total += quantity * product.price
+
         cart.save()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
@@ -120,7 +119,7 @@ class ShoppingListView(generic.ListView):
             messages.info(request, 'Üye olun yada giriş yapın')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         try:
-            cart = Cart.objects.get(user=self.request.user, session_key=request.session.session_key)
+            cart = Cart.objects.get(user=self.request.user)
         except Cart.DoesNotExist:
             messages.info(self.request, 'Sepetiniz Boş')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
@@ -134,36 +133,55 @@ class ShoppingListView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        cart = Cart.objects.get(user=self.request.user, session_key=self.request.session.session_key)
+        cart = Cart.objects.get(user=self.request.user)
         context['cart'] = cart
         context['cart_items'] = CartItem.objects.filter(cart=cart)
         return context
 
 
-def checkout(request, user, session_key):
+def checkout(request, user, cart_number):
     if request.user.username == user:
-        cart_items = CartItem.objects.filter(cart__user__username=user, cart__session_key=session_key)
-        cart = Cart.objects.get(user__username=user, session_key=session_key)
+
+        cart_items = CartItem.objects.filter(cart__user__username=user)
+        cart = Cart.objects.get(user__username=user)
+
         try:
             customer = Customer.objects.get(user=request.user)
         except Customer.DoesNotExist:
             customer = Customer.objects.create(user=request.user)
-        quantity = cart_items.aggregate(models.Sum('quantity'))['quantity__sum']
+
+        cart_quantity = cart_items.aggregate(models.Sum('quantity'))['quantity__sum']
+
         form = UserForm(request.POST or None, instance=request.user)
         form2 = CustomerForm(request.POST or None, instance=customer)
 
         if request.method == 'POST':
+
             if form.is_valid() and form2.is_valid():
+
+                customer.is_loan = True
+                customer.save()
+
+                cart.is_ordered = True
+                cart.save()
+
                 form.save()
-                address = form2.cleaned_data['address']
-                telephone = form2.cleaned_data['telephone']
-                customer.address = address
-                customer.telephone = telephone
                 form2.save()
-                messages.success(request, 'Başarılı')
+
+                for item in cart_items:
+                    item.product.stock -= item.quantity
+                    item.product.ordered += item.quantity
+                    customer.quantity += item.quantity
+                    item.product.save()
+                    customer.save()
+
+                messages.success(request, 'Satın alma başarılı')
+
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-        return render(request, 'pages/checkout.html', {'form': form, 'cart_items': cart_items, 'cart': cart, 'quantity': quantity, 'form2': form2})
+        return render(request, 'pages/checkout.html',
+                      {'form': form, 'cart_items': cart_items, 'cart': cart, 'quantity': cart_quantity, 'form2': form2,
+                       'customer': customer})
 
     else:
 
@@ -171,4 +189,20 @@ def checkout(request, user, session_key):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
+def BorcOdeme(request, user, cart_number):
+    cart = Cart.objects.get(user__username=user)
+    customer = Customer.objects.get(user=request.user)
+    total_price = request.GET.get('total_price', None)
 
+    if total_price:
+        cart.total -= float(total_price)
+        cart.save()
+        if cart.total <= 0:
+            messages.info(request, 'Borcunuzun tamamını ödediniz')
+            cart.delete()
+            customer.is_loan = False
+            return redirect('/')
+        else:
+            messages.info(request, f'Kalan borcunuz {cart.total} TL')
+
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
