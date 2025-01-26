@@ -1,14 +1,15 @@
 import uuid
+from django.contrib.admin.models import LogEntry
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.utils import timezone
-from django.views import generic
-from decimal import Decimal
 
-from accounts.models import Customer
+from django.views import generic
+
+from accounts.models import Customer, OrderModel
 from .models import ProductCategory, Product, SubscriptModel, Cart, CartItem
 from django.contrib import messages
 from .forms import CustomerForm, UserForm
@@ -80,20 +81,24 @@ class ProductDetailView(generic.DetailView):
 
 
 def CartItemsAddView(request, pk):
+
     product = Product.objects.get(pk=pk)
-    quantity = request.GET.get('quantity', None)
+    quantity = float(request.GET.get('quantity', None))
 
     if request.user.is_anonymous:
         messages.info(request, 'Üye olun yada giriş yapın')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+    if request.user.is_superuser:
+        messages.info(request, 'Admin olarak oturum açtın')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
     if quantity:
         try:
             cart = Cart.objects.get(user=request.user)
-        except Cart.DoesNotExist:
-            cart = Cart.objects.create(user=request.user, cart_number=uuid.uuid4())
 
-        quantity = float(quantity)
+        except Cart.DoesNotExist:
+            cart = Cart.objects.create(user=request.user, cart_number=uuid.uuid4(), total=quantity*product.price)
 
         try:
             cart_item = CartItem.objects.get(cart=cart, product=product)
@@ -103,9 +108,7 @@ def CartItemsAddView(request, pk):
         except CartItem.DoesNotExist:
             CartItem.objects.create(cart=cart, product=product, quantity=quantity, sub_total=product.price * quantity)
 
-        cart.total += quantity * product.price
-
-        cart.save()
+        messages.success(request, 'Ürün sepetinize eklendi')
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
@@ -114,26 +117,20 @@ class ShoppingListView(generic.ListView):
     model = CartItem
     template_name = 'pages/dashboard.html'
 
-    def get(self, request, *args, **kwargs):
-        if request.user.is_anonymous:
-            messages.info(request, 'Üye olun yada giriş yapın')
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-        try:
-            cart = Cart.objects.get(user=self.request.user)
-        except Cart.DoesNotExist:
-            messages.info(self.request, 'Sepetiniz Boş')
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-        return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
         try:
-            return CartItem.objects.filter(cart=Cart.objects.get(user=self.request.user))
-        except:
-            return []
+            cart = Cart.objects.get(user=self.request.user)
+        except Cart.DoesNotExist:
+            return None
+        return CartItem.objects.filter(cart=cart)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        cart = Cart.objects.get(user=self.request.user)
+        try:
+            cart = Cart.objects.get(user=self.request.user)
+        except Cart.DoesNotExist:
+            return None
         context['cart'] = cart
         context['cart_items'] = CartItem.objects.filter(cart=cart)
         return context
@@ -143,14 +140,15 @@ def checkout(request, user, cart_number):
     if request.user.username == user:
 
         cart_items = CartItem.objects.filter(cart__user__username=user)
-        cart = Cart.objects.get(user__username=user)
+        cart = Cart.objects.get(user=request.user)
 
         try:
             customer = Customer.objects.get(user=request.user)
         except Customer.DoesNotExist:
             customer = Customer.objects.create(user=request.user)
 
-        cart_quantity = cart_items.aggregate(models.Sum('quantity'))['quantity__sum']
+        quantity = cart_items.aggregate(models.Sum('quantity'))['quantity__sum']
+        total = cart_items.aggregate(models.Sum('sub_total'))['sub_total__sum']
 
         form = UserForm(request.POST or None, instance=request.user)
         form2 = CustomerForm(request.POST or None, instance=customer)
@@ -158,51 +156,74 @@ def checkout(request, user, cart_number):
         if request.method == 'POST':
 
             if form.is_valid() and form2.is_valid():
-
-                customer.is_loan = True
-                customer.save()
-
-                cart.is_ordered = True
-                cart.save()
-
                 form.save()
-                form2.save()
+                form2.save(commit=False)
+
+                last_date = form2.cleaned_data['last_date']
+
+                order = OrderModel.objects.create(customer=customer, order_number=cart_number, quantity=quantity,
+                                                  remain=total, last_date=last_date, total=total)
 
                 for item in cart_items:
+                    order.product.add(item.product)
                     item.product.stock -= item.quantity
                     item.product.ordered += item.quantity
-                    customer.quantity += item.quantity
                     item.product.save()
-                    customer.save()
+
+                order.save()
+
+                cart.delete()
+
+                form2.save()
+
+                customer.is_loan = True
+
+                customer.bought += quantity
+
+                customer.total_loan = OrderModel.objects.aggregate(models.Sum('remain'))['remain__sum']
+
+                customer.save()
 
                 messages.success(request, 'Satın alma başarılı')
 
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+                return redirect('/')
 
-        return render(request, 'pages/checkout.html',
-                      {'form': form, 'cart_items': cart_items, 'cart': cart, 'quantity': cart_quantity, 'form2': form2,
-                       'customer': customer})
+        context = {'form': form, 'cart_items': cart_items, 'cart': cart, 'quantity': quantity, 'form2': form2,
+                   'customer': customer}
+
+        return render(request, 'pages/checkout.html', context=context)
 
     else:
-
-        messages.info(request, 'Sepetiniz Boş')
+        messages.info(request, 'Sepet Bulunamadı')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-def BorcOdeme(request, user, cart_number):
-    cart = Cart.objects.get(user__username=user)
-    customer = Customer.objects.get(user=request.user)
-    total_price = request.GET.get('total_price', None)
+class OrderListView(LoginRequiredMixin, generic.ListView):
+    model = OrderModel
+    template_name = 'pages/dashboard.html'
+    context_object_name = 'order_list'
 
-    if total_price:
-        cart.total -= float(total_price)
-        cart.save()
-        if cart.total <= 0:
-            messages.info(request, 'Borcunuzun tamamını ödediniz')
-            cart.delete()
-            customer.is_loan = False
-            return redirect('/')
-        else:
-            messages.info(request, f'Kalan borcunuz {cart.total} TL')
+    def get_queryset(self):
+        customer = Customer.objects.get(user=self.request.user)
+        return OrderModel.objects.filter(customer=customer)
 
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        customer = Customer.objects.get(user=self.request.user)
+        remain = OrderModel.objects.filter(customer=customer).aggregate(models.Sum('remain'))['remain__sum']
+        context['cost'] = remain
+        return context
+
+def delete_cart(request, cart_number):
+    cart = Cart.objects.get(user__username=request.user, cart_number=cart_number)
+    cart.delete()
+    messages.success(request, 'Sepetinizi sildiniz')
+    return redirect('/')
+
+def remove_cart_item(request, pk):
+    cart_item = CartItem.objects.get(pk=pk)
+    cart_item.delete()
+    if cart_item.product is not None:
+        cart_item.cart.delete()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+

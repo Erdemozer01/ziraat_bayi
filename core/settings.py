@@ -505,4 +505,3 @@ DJANGO_GALLERY_FIELD_CONFIG = {
     "widget_hidden_input_css_class": "django-galleryfield",
 
 }
-

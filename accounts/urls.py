@@ -9,4 +9,5 @@ urlpatterns = [
     path('login/', views.LoginView.as_view(), name='login'),
     path('kayıt-ol', views.RegisterView.as_view(), name='register'),
     path('accounts/password_reset/', views.PasswordResetView.as_view(), name='password_reset'),
+    path('dashboard/kayıtlar/', views.LogEntryListView.as_view(), name='logentry_list'),
 ]

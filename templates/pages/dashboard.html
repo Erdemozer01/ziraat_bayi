@@ -26,6 +26,7 @@
 
             {% if user.is_superuser or user.is_staff %}
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
                     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                         <h1 class="h2">Dashboard</h1>
                         <div class="btn-toolbar mb-2 mb-md-0">
@@ -52,164 +53,74 @@
                         </div>
                     </div>
 
-                    <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 
-                    <h2>Section title</h2>
-                    <div class="table-responsive small">
+                    {% if 'kayıtlar' in request.path %}
+                        <h2>Site Eylemleri</h2>
+                        <div class="table-responsive small">
                         <table class="table table-striped table-sm">
                             <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Header</th>
-                                <th scope="col">Header</th>
-                                <th scope="col">Header</th>
-                                <th scope="col">Header</th>
+                                <th scope="col">İşlemi Yapan</th>
+                                <th scope="col">Eylem</th>
+                                <th scope="col">Eylem Zamanı</th>
+                                <th scope="col">Mesaj</th>
+                                <th scope="col">İçerik</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>1,001</td>
-                                <td>random</td>
-                                <td>data</td>
-                                <td>placeholder</td>
-                                <td>text</td>
-                            </tr>
-                            <tr>
-                                <td>1,002</td>
-                                <td>placeholder</td>
-                                <td>irrelevant</td>
-                                <td>visual</td>
-                                <td>layout</td>
-                            </tr>
-                            <tr>
-                                <td>1,003</td>
-                                <td>data</td>
-                                <td>rich</td>
-                                <td>dashboard</td>
-                                <td>tabular</td>
-                            </tr>
-                            <tr>
-                                <td>1,003</td>
-                                <td>information</td>
-                                <td>placeholder</td>
-                                <td>illustrative</td>
-                                <td>data</td>
-                            </tr>
-                            <tr>
-                                <td>1,004</td>
-                                <td>text</td>
-                                <td>random</td>
-                                <td>layout</td>
-                                <td>dashboard</td>
-                            </tr>
-                            <tr>
-                                <td>1,005</td>
-                                <td>dashboard</td>
-                                <td>irrelevant</td>
-                                <td>text</td>
-                                <td>placeholder</td>
-                            </tr>
-                            <tr>
-                                <td>1,006</td>
-                                <td>dashboard</td>
-                                <td>illustrative</td>
-                                <td>rich</td>
-                                <td>data</td>
-                            </tr>
-                            <tr>
-                                <td>1,007</td>
-                                <td>placeholder</td>
-                                <td>tabular</td>
-                                <td>information</td>
-                                <td>irrelevant</td>
-                            </tr>
-                            <tr>
-                                <td>1,008</td>
-                                <td>random</td>
-                                <td>data</td>
-                                <td>placeholder</td>
-                                <td>text</td>
-                            </tr>
-                            <tr>
-                                <td>1,009</td>
-                                <td>placeholder</td>
-                                <td>irrelevant</td>
-                                <td>visual</td>
-                                <td>layout</td>
-                            </tr>
-                            <tr>
-                                <td>1,010</td>
-                                <td>data</td>
-                                <td>rich</td>
-                                <td>dashboard</td>
-                                <td>tabular</td>
-                            </tr>
-                            <tr>
-                                <td>1,011</td>
-                                <td>information</td>
-                                <td>placeholder</td>
-                                <td>illustrative</td>
-                                <td>data</td>
-                            </tr>
-                            <tr>
-                                <td>1,012</td>
-                                <td>text</td>
-                                <td>placeholder</td>
-                                <td>layout</td>
-                                <td>dashboard</td>
-                            </tr>
-                            <tr>
-                                <td>1,013</td>
-                                <td>dashboard</td>
-                                <td>irrelevant</td>
-                                <td>text</td>
-                                <td>visual</td>
-                            </tr>
-                            <tr>
-                                <td>1,014</td>
-                                <td>dashboard</td>
-                                <td>illustrative</td>
-                                <td>rich</td>
-                                <td>data</td>
-                            </tr>
-                            <tr>
-                                <td>1,015</td>
-                                <td>random</td>
-                                <td>tabular</td>
-                                <td>information</td>
-                                <td>text</td>
-                            </tr>
+                            {% if logentry_list %}
+                                {% for entry in logentry_list %}
+                                    <tr>
+                                        <td>{{ entry.id }}</td>
+                                        <td>{{ entry.user }}</td>
+                                        <td>{{ entry.action_flag }}</td>
+                                        <td>{{ entry.action_time }}</td>
+                                        <td>{{ entry.change_message }}</td>
+                                        <td>{{ entry.content_type }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
                             </tbody>
                         </table>
+                    {% endif %}
                     </div>
+
                 </main>
             {% else %}
+                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" style="margin-bottom: 10rem">
 
-                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                         <h1 class="h2">Dashboard</h1>
                         <div class="btn-toolbar mb-2 mb-md-0">
                             <div class="btn-group me-2">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Paylaş</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Çıkart</button>
+                                {% if cart_items %}
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#trashModal">
+                                        <i class="bi bi-trash"></i>
+                                        Sepeti Sil
+                                    </button>
+                                    {% include 'widgets/trashModal.html' %}
+                                {% endif %}
                             </div>
                         </div>
                     </div>
+
                     {% include 'widgets/messages.html' %}
+
                     {% if 'sepetim' in request.path %}
-                        {% if cart.is_ordered is False %}
-                            <h2>Sepetim</h2>
+                        <h2>Sepetim</h2>
+                        {% if cart_items %}
                             <div class="table-responsive small">
                                 <table class="table table-striped table-sm">
                                     <thead>
                                     <tr>
                                         <th scope="col">Ürün</th>
                                         <th scope="col">Miktar</th>
-                                        <th scope="col">Birim Fiyat</th>
-                                        <th scope="col">Ara Toplam</th>
-                                        <th scope="col">işlem Tarihi</th>
-                                        <th scope="col">Son Ödeme Tarihi</th>
-
+                                        <th scope="col">Birim Fiyat (TL)</th>
+                                        <th scope="col">Ara Toplam (TL)</th>
+                                        <th scope="col">İşlem Tarihi</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -220,75 +131,84 @@
                                             <td>{{ cartitem.product.price }}</td>
                                             <td>{{ cartitem.sub_total }}</td>
                                             <td>{{ cart.created }}</td>
-                                            <td>{{ cart.last_date }}</td>
+                                            <td>
+                                                <a type="button" data-bs-toggle="modal"
+                                                   data-bs-target="#editCarModal">
+                                                    <img src="{% static 'admin/img/icon-deletelink.svg' %}" alt="">
+                                                </a>
+                                            </td>
+
+                                            {% include 'widgets/editCarModal.html' %}
                                         </tr>
                                     {% endfor %}
-
-
                                     </tbody>
                                 </table>
                             </div>
                             <a href="{% url 'bayi:checkout' user cart.cart_number %}">
-                                <button type="button" class="btn btn-outline-secondary float-end">Ödeme Sayfası</button>
+                                <button type="button" class="btn btn-outline-secondary float-end">Ödeme Sayfası
+                                </button>
                             </a>
                         {% else %}
-                            <h2>Siparişlerim</h2>
+                            <p>Sepetinizde ürün bulunamadı</p>
+                        {% endif %}
+
+                    {% endif %}
+
+                    {% if 'siparişlerim' in request.path %}
+                        <h2>Satın Aldıklarım</h2>
+                        {% if order_list %}
                             <div class="table-responsive small">
+
                                 <table class="table table-striped table-sm">
                                     <thead>
                                     <tr>
-                                        <th scope="col">Ürün</th>
+                                        <th scope="col">Aldığım ürünler</th>
                                         <th scope="col">Adet</th>
-                                        <th scope="col">Birim Fiyat</th>
-                                        <th scope="col">Ara Toplam</th>
-                                        <th scope="col">işlem Tarihi</th>
+                                        <th scope="col">Brim Fiyat</th>
+                                        <th scope="col">Tutar</th>
+                                        <th scope="col">Satın alma Tarihi</th>
                                         <th scope="col">Son Ödeme Tarihi</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for cartitem in cart_items %}
+
+                                    {% for order in order_list %}
                                         <tr>
-                                            <td>{{ cartitem.product }}</td>
-                                            <td>{{ cartitem.quantity }}</td>
-                                            <td>{{ cartitem.product.price }} TL</td>
-                                            <td>{{ cartitem.sub_total }} TL</td>
-                                            <td>{{ cart.created.date }}</td>
-                                            <td>{{ cart.last_date }}</td>
+                                            <td>{% for product in order.product.all %}{{ product.name }} , {% endfor %}</td>
+                                            <td>{{ order.quantity }}</td>
+                                            <td>{% for product in order.product.all %}{{ product.price }} {% endfor %} TL</td>
+                                            <td>{{ order.remain }} TL</td>
+                                            <td>{{ order.order_date }}</td>
+                                            <td>{{ order.last_date }}</td>
                                         </tr>
                                     {% endfor %}
-                                    <td>Toplam borç</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>{{ cart.total }} TL</td>
-                                    <td></td>
-                                    <td></td>
+                                    <tr>
+                                        <td>Borc</td>
+                                        <td></td>
+                                        <td>{{ cost }} TL</td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <form class="col-md-4 p-2 float-end" method="get"
-                                  action="{% url 'bayi:borc_odeme' user cart.cart_number %}">
-                                <div class="input-group">
-                                    <input type="number" class="form-control" placeholder="Ödeme tutarı (TL)"
-                                           name="total_price" value="{{ request.GET.total_price }}" required>
-                                    <button type="submit" class="btn btn-secondary">Ödeme yap</button>
-                                </div>
-                                <small class="m-2">*Ödeme yaptıkça toplam borcunuzdan düşülecektir</small>
-                            </form>
+                        {% else %}
+                            <p>Sipariş Bulunamadı</p>
                         {% endif %}
                     {% endif %}
+
                     {% if 'bilgilerim' in request.path %}
                         <form action="" method="post">
                             {% csrf_token %}
-                            <div class="form-group col-md-10 mx-auto" style="margin-bottom: 40%">
+                            <div class="form-group col-md-10 mx-auto">
                                 {% bootstrap_form form2 %}
                                 {% bootstrap_form form %}
                                 <button type="submit" class="btn btn-secondary float-end">Güncelle</button>
                             </div>
-
                         </form>
                     {% endif %}
+
                 </main>
             {% endif %}
+
         </div>
     </div>
 

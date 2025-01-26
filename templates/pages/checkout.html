@@ -32,22 +32,15 @@
                             <li class="list-group-item d-flex justify-content-between lh-sm">
                                 <div>
                                     <h6 class="my-0">{{ cart.product.name }}</h6>
-                                    <small class="text-body-secondary">{{ cart.product.price }} x {{ cart.quantity }}</small>
+                                    <small class="text-body-secondary">{{ cart.product.price }}
+                                        x {{ cart.quantity }}</small>
                                 </div>
                                 <span class="text-body-secondary">{{ cart.sub_total }} TL</span>
                             </li>
                         {% endfor %}
 
-                        <li class="list-group-item d-flex justify-content-between bg-body-tertiary">
-                            <div class="text-success">
-                                <h6 class="my-0">Promosyon Kodu</h6>
-                                <small>EXAMPLECODE</small>
-                            </div>
-                            <span class="text-success">−$5</span>
-                        </li>
-
                         <li class="list-group-item d-flex justify-content-between">
-                            <span>Total TL</span>
+                            <span>Toplam Tutar TL</span>
                             <strong>{{ cart.total }}</strong>
                         </li>
                     </ul>
@@ -73,6 +66,7 @@
                         <hr class="my-4">
 
                         <button class="w-100 btn btn-primary btn-lg" type="submit">Satın al</button>
+
                     </form>
                 </div>
             </div>

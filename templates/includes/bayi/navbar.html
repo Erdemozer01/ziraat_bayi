@@ -58,49 +58,64 @@
                             Profil
                         </a>
                         <ul class="dropdown-menu">
+
                             {% if user.is_authenticated %}
-                                {% if user.is_superuser %}
+                                {% if user.is_superuser or user.is_staff %}
+                                    <li><a class="dropdown-item"
+                                           href="{% url 'accounts:dashboard' user %}">Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'admin:index' %}bayi/product/add/">Ürün
+                                        Ekle</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin Paneli</a></li>
                                     <li>
-                                        <a class="dropdown-item"
-                                           href="{% url 'accounts:dashboard' user %}">Dashboard</a>
+                                        <hr class="dropdown-divider">
                                     </li>
-                                {% endif %}
-                                <li>
-                                    <a class="dropdown-item" aria-current="page"
-                                       href="{% url 'bayi:sepetim' request.user %}">
+                                {% else %}
+                                    <li><a class="dropdown-item" aria-current="page"
+                                           href="{% url 'bayi:shoppinglist' user %}">
+                                        <i class="bi bi-envelope"></i>
+                                        Siparişlerim
+                                    </a></li>
+                                    <li><a class="dropdown-item" aria-current="page"
+                                           href="{% url 'bayi:sepetim' request.user %}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                              fill="currentColor"
                                              class="bi bi-cart text-info" viewBox="0 0 16 16">
                                             <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
                                         </svg>
                                         Sepetim
-                                    </a>
+                                    </a></li>
+                                    <li><a class="dropdown-item" aria-current="page"
+                                           href="{% url 'accounts:my_information' request.user.pk user %}">
+                                        <i class="bi bi-people-fill"></i>
+                                        Bilgilerim
+                                    </a></li>
+                                {% endif %}
+
+                                <li>
+                                    <form action="{% url 'logout' %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                 fill="currentColor" class="bi bi-box-arrow-in-right"
+                                                 viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd"
+                                                      d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0z"/>
+                                                <path fill-rule="evenodd"
+                                                      d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+                                            </svg>
+                                            Çıkış
+                                        </button>
+                                    </form>
                                 </li>
+
                             {% else %}
                                 <li>
                                     <a class="dropdown-item" href="{% url 'login' %}">Giriş / Üye ol</a>
                                 </li>
                             {% endif %}
-                            {% if user.is_superuser %}
-                                <li><a class="dropdown-item" href="{% url 'admin:index' %}bayi/product/add/">Ürün
-                                    Ekle</a></li>
-                                <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin Paneli</a></li>
-                            {% endif %}
-                            {% if user.is_authenticated %}
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <form action="{% url 'logout' %}" method="post">
-                                        {% csrf_token %}
-                                        <button type="submit" class="dropdown-item">Çıkış</button>
-                                    </form>
-                                </li>
-                            {% endif %}
+
                         </ul>
                     </li>
-
-
                 </ul>
                 <form class="d-flex mt-3 mt-lg-0" role="search" method="get" action="{% url 'bayi:anasayfa' %}">
                     <input class="form-control me-2" type="search" placeholder="Kategori veya Başlık"

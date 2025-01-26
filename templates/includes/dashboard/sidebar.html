@@ -53,11 +53,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2" href="#">
+                        <a class="nav-link d-flex align-items-center gap-2" href="{% url 'accounts:logentry_list' %}">
                             <svg class="bi">
                                 <use xlink:href="#puzzle"/>
                             </svg>
-                            Integrations
+                            Site Eylemleri
                         </a>
                     </li>
                 </ul>
@@ -150,13 +150,15 @@
                         <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page"
                            href="/">
                             <svg class="bi">
-                                <<use xlink:href="#house-fill"/>
+                                <
+                                <use xlink:href="#house-fill"/>
                             </svg>
                             Anasayfa
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2" href="#">
+                        <a class="nav-link d-flex align-items-center gap-2"
+                           href="{% url 'bayi:shoppinglist' user %}">
                             <svg class="bi">
                                 <use xlink:href="#file-earmark"/>
                             </svg>
@@ -164,7 +166,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2" href="{% url 'accounts:my_information' user.pk user %}">
+                        <a class="nav-link active d-flex align-items-center gap-2 "
+                           href="{% url 'accounts:my_information' user.pk user %}">
                             <svg class="bi">
                                 <use xlink:href="#people"/>
                             </svg>
@@ -188,7 +191,7 @@
                 <ul class="nav flex-column mb-auto">
 
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2" href="{% url 'admin:index' %}">
+                        <a class="nav-link d-flex align-items-center gap-2" href="{% url 'password_reset' %}">
                             <svg class="bi">
                                 <use xlink:href="#gear-wide-connected"/>
                             </svg>

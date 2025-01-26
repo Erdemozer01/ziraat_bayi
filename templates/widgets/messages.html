@@ -23,6 +23,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             {% elif 'siparis-özeti' in request.path %}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            {% elif 'ayrıntılar' in request.path %}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             {% else %}
                 <a href="{% url 'bayi:anasayfa' %}">
                     <button type="button" class="btn-close"></button>

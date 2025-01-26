@@ -77,7 +77,6 @@ class Cart(models.Model):
     is_ordered = models.BooleanField(default=False, verbose_name='Sipariş verildi mi ?')
 
     created = models.DateTimeField(auto_now_add=True, verbose_name='Oluşturulma Tarihi')
-    last_date = models.DateField(verbose_name='Son ödeme tarihi', default=timezone.now)
 
     def __str__(self):
         return self.user.username + ' ' + self.cart_number
@@ -93,9 +92,28 @@ class CartItem(models.Model):
     quantity = models.PositiveIntegerField(default=1, verbose_name='Miktar')
     sub_total = models.FloatField(default=0, verbose_name='Ara Toplam')
 
+    def __str__(self):
+        return self.product.name
+
     class Meta:
         verbose_name = 'Sepetteki Ürün'
         verbose_name_plural = 'Sepetteki Ürünler'
+
+
+class CaseModel(models.Model):
+    order = models.ForeignKey('accounts.OrderModel', on_delete=models.CASCADE, verbose_name='Sipariş')
+    total = models.FloatField(verbose_name='Ödenen')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Ödeme Tarihi')
+
+    class Meta:
+        verbose_name = 'Kasa'
+        verbose_name_plural = 'Kasa'
+
+    def save(self, *args, **kwargs):
+        if self.order.remain >= 0:
+            return super().save(*args, **kwargs)
+        else:
+            pass
 
 
 class SubscriptModel(models.Model):
