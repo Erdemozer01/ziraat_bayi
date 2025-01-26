@@ -17,11 +17,6 @@ class DashboardView(generic.ListView):
     template_name = 'pages/dashboard.html'
 
 
-class LogEntryListView(generic.ListView):
-    model = LogEntry
-    template_name = 'pages/dashboard.html'
-
-
 def MyInformationDashBoardView(request, pk, user):
     if request.user.username == user:
         customer = Customer.objects.get(user__username=user)
@@ -61,7 +56,7 @@ class RegisterView(generic.CreateView):
         return settings.LOGIN_REDIRECT_URL
 
     def form_valid(self, form):
-        messages.success(self.request, 'Hesabınız Başarılı şekilde oluşturuldu.')
+        messages.success(self.request, 'üye olma işlemi başarılı')
         return super(RegisterView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -114,7 +109,3 @@ class PasswordResetConfirmView(views.PasswordResetConfirmView):
         return context
 
 
-def ClearLogEntry(request):
-    LogEntry.objects.all().delete()
-    messages.info(request, 'İşlem Kayıtlarınız sildiniz')
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

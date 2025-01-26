@@ -1,11 +1,17 @@
 {% extends "admin/base_site.html" %}
-{% load i18n static %}
-
+{% load i18n static settings %}
+{% get_setting as obj %}
 {% block extrastyle %}{{ block.super }}
     <link rel="stylesheet" href="{% static "admin/css/login.css" %}">
     {{ form.media }}
 {% endblock %}
 
+{% block branding %}
+    <div id="site-name"><a href="/">{{ site_header|default:_('Anasayfa') }}</a></div>
+    {% if user.is_anonymous %}
+        {% include "admin/color_theme_toggle.html" %}
+    {% endif %}
+{% endblock %}
 
 {% block bodyclass %}{{ block.super }} login{% endblock %}
 
@@ -20,7 +26,7 @@
 {% block nav-breadcrumbs %}{% endblock %}
 
 {% block title %}
-	Giriş yap
+    Giriş yap
 {% endblock %}
 
 {% block content %}

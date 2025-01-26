@@ -1,6 +1,6 @@
 from django import template
 from bayi.models import SettingsSite, ProductCategory
-from django.contrib.admin.models import LogEntry
+
 register = template.Library()
 
 
@@ -9,7 +9,7 @@ def get_setting():
     try:
         return SettingsSite.objects.latest('created')
     except SettingsSite.DoesNotExist:
-        return None
+        return 'Django'
 
 @register.simple_tag
 def get_product_category():

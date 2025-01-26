@@ -3,7 +3,12 @@
 
 {% block breadcrumbs %}
     <div class="breadcrumbs"><a href="{% url 'admin:index' %}">{% translate 'Home' %}</a></div>{% endblock %}
-
+{% block branding %}
+<div id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Hoşcakalın') }}</a></div>
+{% if user.is_anonymous %}
+  {% include "admin/color_theme_toggle.html" %}
+{% endif %}
+{% endblock %}
 {% block nav-sidebar %}{% endblock %}
 
 {% block content %}
@@ -12,7 +17,7 @@
 
     <p>
         <a href="{% url 'login' %}">{% translate 'Log in again' %}</a>
-        <a style="margin-left: 3%" href="{% url 'bayi:anasayfa' %}">{% translate 'Anasayfaya dön' %}</a>
+        <a style="margin-left: 3%" href="{% url 'bayi:anasayfa' %}">Anasayfa &raquo;</a>
     </p>
 
 {% endblock %}
