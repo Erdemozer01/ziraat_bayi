@@ -1,6 +1,7 @@
 {% load settings static %}
 {% get_setting as obj %}
 
+<!-- Footer -->
 <div class="container mb-5">
     <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
         <div class="col-md-4 d-flex align-items-center">
@@ -11,23 +12,24 @@
                     <img src="{% static 'assets/img/favicons/favicon.png' %}" alt="" width="32" height="32"
                          class="rounded-circle">
                 {% endif %}
-
             </a>
             <span class="mb-3 mb-md-0 text-body-secondary">&copy; 2024 {{ obj.name.title }}, Inc</span>
         </div>
-
         <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
-            <li class="ms-3"><a class="text-body-secondary" href="https://api.whatsapp.com/send?text={{ request.build_absolute_uri }}">
+            <li class="ms-3"><a class="text-body-secondary"
+                                href="https://api.whatsapp.com/send?text={{ request.build_absolute_uri }}">
                 <svg class="bi" width="24" height="24">
                     <use xlink:href="#whatsapp"/>
                 </svg>
             </a></li>
-            <li class="ms-3"><a class="text-body-secondary" href="https://twitter.com/intent/tweet?text={{ request.build_absolute_uri }}">
+            <li class="ms-3"><a class="text-body-secondary"
+                                href="https://twitter.com/intent/tweet?text={{ request.build_absolute_uri }}">
                 <svg class="bi" width="24" height="24">
                     <use xlink:href="#twitter"/>
                 </svg>
             </a></li>
-            <li class="ms-3"><a class="text-body-secondary" href="https://www.linkedin.com/cws/share/?url={{ request.build_absolute_uri }}">
+            <li class="ms-3"><a class="text-body-secondary"
+                                href="https://www.linkedin.com/cws/share/?url={{ request.build_absolute_uri }}">
                 <svg class="bi" width="24" height="24">
                     <use xlink:href="#linkedin"/>
                 </svg>
