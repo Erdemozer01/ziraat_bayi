@@ -1,35 +1,28 @@
 {% load settings static %}
 {% get_setting as obj %}
 
-<div class="container">
-    <footer class="footer mt-auto d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-        <div class="col-md-4 d-flex align-items-center">
-            <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
-                <img src="{% static 'assets/img/favicons/favicon.png' %}" alt="" width="30" height="30" class="rounded-circle">
-            </a>
-            <span class="mb-3 mb-md-0 text-body-secondary">&copy; 2024 {{ obj.name.title }}, Inc</span>
-        </div>
+<div class="container fixed-bottom">
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+        <p class="col-md-4 mb-0 text-body-secondary">&copy; {% now 'Y' %} {{ obj.name }}, Inc</p>
 
-        <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+        <a href="#"
+           class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+            {% if obj.favicon %}
+                <img src="{{ obj.favicon.url }}" alt="" width="40" height="40">
+            {% else %}
+                <img src="{% static 'assets/img/favicons/favicon.png' %}" alt="" width="40" height="40">
+            {% endif %}
 
-            <li class="ms-3"><a class="text-body-secondary"
-                                href="https://twitter.com/intent/tweet?text={{ request.build_absolute_uri }}">
-                <svg class="bi" width="24" height="24">
-                    <use xlink:href="#twitter"/>
-                </svg>
-            </a></li>
-            <li class="ms-3"><a class="text-body-secondary"
-                                href="https://api.whatsapp.com/send?text={{ request.build_absolute_uri }}">
-                <svg class="bi" width="24" height="24">
-                    <use xlink:href="#whatsapp"/>
-                </svg>
-            </a></li>
-            <li class="ms-3"><a class="text-body-secondary"
-                                href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}">
-                <svg class="bi" width="24" height="24">
-                    <use xlink:href="#facebook"/>
-                </svg>
-            </a></li>
+        </a>
+
+        <ul class="nav col-md-4 justify-content-end">
+            <li class="nav-item"><a href="/" class="nav-link px-2 text-body-secondary">Anasayfa</a></li>
+            <li class="nav-item"><a href="#" data-bs-toggle="modal" data-bs-target="#subscripts"
+                                    class="nav-link px-2 text-body-secondary">Abone Ol</a></li>
+            <li class="nav-item"><a href="{% url 'accounts:register' %}" class="nav-link px-2 text-body-secondary">Üye
+                ol</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">FAQs</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Hakkımızda</a></li>
         </ul>
     </footer>
 </div>
