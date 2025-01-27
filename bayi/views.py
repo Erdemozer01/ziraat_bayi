@@ -228,11 +228,14 @@ def remove_cart_item(request, pk):
 
 
 def contact_us(request):
-    form = ContactForm(request.POST)
+    form = ContactForm(request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        else:
+            form = ContactForm()
+
     return render(request, 'pages/contact.html', {'form': form})
 
 

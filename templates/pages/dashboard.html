@@ -8,10 +8,6 @@
     <link href="{% static 'assets/css/dashboard.css' %}?{% now 'U' %}" rel="stylesheet">
 {% endblock %}
 
-{% block dark_mod %}
-    {% include 'widgets/darkmod.html' %}
-{% endblock %}
-
 {% block header %}
     {% include 'includes/dashboard/header.html' %}
 {% endblock %}
@@ -310,8 +306,6 @@
 
         </div>
     </div>
-
-    {% include 'includes/dashboard/footer.html' %}
 
 {% endblock %}
 

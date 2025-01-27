@@ -7,10 +7,6 @@
 {% endblock %}
 
 
-{% block dark_mod %}
-    {% include 'widgets/darkmod.html' %}
-{% endblock %}
-
 {% block stylesheets %}
     <link href="{% static 'assets/css/blog.css' %}?{% now 'U' %}" rel="stylesheet">
     <!-- Custom styles for this template -->
@@ -18,16 +14,5 @@
 {% endblock %}
 
 {% block content %}
-    <main class="container">
-        {% include 'includes/bayi/navbar.html' %}
-        {% include 'widgets/subscript.html' %}
-        {% include 'includes/bayi/search.html' %}
-        {% if messages %}
-            {% include 'widgets/messages.html' %}
-        {% else %}
-            {% include 'includes/bayi/header.html' %}
-        {% endif %}
-        {% include 'includes/bayi/cards.html' %}
-        {% include 'includes/bayi/footer.html' %}
-    </main>
+   {% include 'includes/bayi/cards.html' %}
 {% endblock %}

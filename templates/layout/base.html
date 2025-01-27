@@ -31,11 +31,24 @@
 
 <body>
 
-{% block dark_mod %}{% endblock %}
+{% include 'widgets/darkmod.html' %}
 
-{% block header %}{% endblock %}
+<main class="{% if 'dashboard' in request.path %}container-fluid{% else %}container{% endif %}">
+    {% if 'dashboard' in request.path %}
+        {% include 'includes/dashboard/header.html' %}
+    {% else %}
+        {% include 'includes/bayi/navbar.html' %}
+    {% endif %}
+    {% include 'widgets/subscript.html' %}
+    {% if messages %}
+        {% include 'widgets/messages.html' %}
+    {% else %}
+        {% include 'includes/bayi/header.html' %}
+    {% endif %}
+    {% block content %}{% endblock %}
+    {% include 'includes/bayi/footer.html' %}
+</main>
 
-{% block content %}{% endblock %}
 
 {% block extra_js %}{% endblock %}
 

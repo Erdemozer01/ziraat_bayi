@@ -2,10 +2,6 @@
 {% load static thumbnail %}
 {% block title %}{{ object.name }}{% endblock %}
 
-{% block dark_mod %}
-    {% include 'widgets/darkmod.html' %}
-{% endblock %}
-
 {% block stylesheets %}
     <link href="{% static 'assets/css/blog.css' %}?{% now 'U' %}" rel="stylesheet">
     <!-- Custom styles for this template -->
@@ -13,102 +9,88 @@
 {% endblock %}
 
 {% block content %}
-    <main class="container">
-        {% include 'includes/bayi/navbar.html' %}
-        {% include 'widgets/subscript.html' %}
-        {% include 'includes/bayi/search.html' %}
-        {% if messages %}
-            {% include 'widgets/messages.html' %}
-        {% else %}
-            {% include 'includes/bayi/header.html' %}
-        {% endif %}
-        <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
-            <div class="col-lg-5 px-0">
-                <h1 class="display-4 fst-italic">{{ object.name.title }}</h1>
-                <p class="lead my-3">Kategori: {{ object.category.name.title }}</p>
-                <p class="lead my-3">Fiyat: {{ object.price }} TL </p>
+    <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
+        <div class="col-lg-5 px-0">
+            <h1 class="display-4 fst-italic">{{ object.name.title }}</h1>
+            <p class="lead my-3">Kategori: {{ object.category.name.title }}</p>
+            <p class="lead my-3">Fiyat: {{ object.price }} TL </p>
 
-                <form class="card p-2 col-md-6" action="{% url 'bayi:add_cart' object.pk %}" method="get">
-                    <div class="input-group">
-                        <input id="quantity" placeholder="Ürün Adeti" type="number" name="quantity"
-                               value="{{ request.GET.quantity }}"
-                               class="form-control" min="1" max="{{ object.stock }}" required>
-                        <button type="submit" class="btn btn-sm btn-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                 class="bi bi-cart-plus-fill" viewBox="0 0 16 16">
-                                <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M9 5.5V7h1.5a.5.5 0 0 1 0 1H9v1.5a.5.5 0 0 1-1 0V8H6.5a.5.5 0 0 1 0-1H8V5.5a.5.5 0 0 1 1 0"/>
-                            </svg>
-                            Sepete Ekle
-                        </button>
-                    </div>
-                </form>
-
-
-
-            </div>
-        </div>
-
-        <div class="row g-4" style="margin-top: 2%">
-
-            <div class="col-md-8">
-                <h3 class="pb-4 mb-4 fst-italic border-bottom">
-                    Ürün Hakkında
-                </h3>
-
-                <article class="blog-post">
-                    <a href="{{ object.image.url }}">
-                        {% thumbnail object.image "1920x1080" padding=True quality=100 crop="center" as im %}
-                            <img src="{{ im.url }}" class="img-fluid rounded-end mb-5"
-                                 alt="{{ object.title }}">
-                        {% endthumbnail %}
-                    </a>
-                    <div>{{ object.content|safe }}</div>
-                </article>
-            </div>
-
-            <div class="col-md-4">
-                <div class="position-sticky" style="top: 2rem;">
-                    {% if recent_list %}
-                        <div>
-                            <h4 class="fst-italic" style="margin-top: 4%">İlişkili ürünler</h4>
-                            <ul class="list-unstyled">
-                                {% for recent in recent_list %}
-                                    <li>
-                                        <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top"
-                                           href="{% url 'bayi:product_detail' recent.pk recent.category.slug recent.name|slugify %}">
-                                            <div class="col-lg-8">
-                                                <h6 class="mb-0">{{ recent.name.title }}</h6>
-                                                <small class="text-body-secondary">{{ recent.category.name.title }}</small>
-                                            </div>
-                                        </a>
-                                    </li>
-                                {% endfor %}
-
-                            </ul>
-                        </div>
-                    {% endif %}
-                    {% if new_products %}
-                        <div>
-                            <h4 class="fst-italic" style="margin-top: 4%">Yeni gelen ürünler</h4>
-                            <ul class="list-unstyled">
-                                {% for new_product in new_products %}
-                                    <li>
-                                        <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top"
-                                           href="{% url 'bayi:product_detail' new_product.pk new_product.category.slug new_product.name|slugify %}">
-                                            <div class="col-lg-8">
-                                                <h6 class="mb-0">{{ new_product.name.title }}</h6>
-                                                <small class="text-body-secondary">{{ new_product.category.name.title }}</small>
-                                            </div>
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    {% endif %}
+            <form class="card p-2 col-md-6" action="{% url 'bayi:add_cart' object.pk %}" method="get">
+                <div class="input-group">
+                    <input id="quantity" placeholder="Ürün Adeti" type="number" name="quantity"
+                           value="{{ request.GET.quantity }}"
+                           class="form-control" min="1" max="{{ object.stock }}" required>
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-cart-plus-fill" viewBox="0 0 16 16">
+                            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M9 5.5V7h1.5a.5.5 0 0 1 0 1H9v1.5a.5.5 0 0 1-1 0V8H6.5a.5.5 0 0 1 0-1H8V5.5a.5.5 0 0 1 1 0"/>
+                        </svg>
+                        Sepete Ekle
+                    </button>
                 </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row g-4" style="margin-top: 2%">
+
+        <div class="col-md-8">
+            <h3 class="pb-4 mb-4 fst-italic border-bottom">
+                Ürün Hakkında
+            </h3>
+
+            <article class="blog-post">
+                <a href="{{ object.image.url }}">
+                    {% thumbnail object.image "1920x1080" padding=True quality=100 crop="center" as im %}
+                        <img src="{{ im.url }}" class="img-fluid rounded-end mb-5"
+                             alt="{{ object.title }}">
+                    {% endthumbnail %}
+                </a>
+                <div>{{ object.content|safe }}</div>
+            </article>
+        </div>
+
+        <div class="col-md-4">
+            <div class="position-sticky" style="top: 2rem;">
+                {% if recent_list %}
+                    <div>
+                        <h4 class="fst-italic" style="margin-top: 4%">İlişkili ürünler</h4>
+                        <ul class="list-unstyled">
+                            {% for recent in recent_list %}
+                                <li>
+                                    <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top"
+                                       href="{% url 'bayi:product_detail' recent.pk recent.category.slug recent.name|slugify %}">
+                                        <div class="col-lg-8">
+                                            <h6 class="mb-0">{{ recent.name.title }}</h6>
+                                            <small class="text-body-secondary">{{ recent.category.name.title }}</small>
+                                        </div>
+                                    </a>
+                                </li>
+                            {% endfor %}
+
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if new_products %}
+                    <div>
+                        <h4 class="fst-italic" style="margin-top: 4%">Yeni gelen ürünler</h4>
+                        <ul class="list-unstyled">
+                            {% for new_product in new_products %}
+                                <li>
+                                    <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top"
+                                       href="{% url 'bayi:product_detail' new_product.pk new_product.category.slug new_product.name|slugify %}">
+                                        <div class="col-lg-8">
+                                            <h6 class="mb-0">{{ new_product.name.title }}</h6>
+                                            <small class="text-body-secondary">{{ new_product.category.name.title }}</small>
+                                        </div>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
             </div>
         </div>
-        {% include 'includes/bayi/footer.html' %}
-    </main>
+    </div>
 
 {% endblock %}
