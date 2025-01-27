@@ -1,7 +1,15 @@
 from django.contrib import admin
-from django.http import HttpResponseRedirect
 from django.contrib import messages
-from .models import Product, ProductCategory, Header, SettingsSite, SubscriptModel, Cart, CartItem, CaseModel
+from .models import Product, ProductCategory, Header, SettingsSite, SubscriptModel, Cart, CartItem, CaseModel, Contact
+
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+    list_display = ('subject', 'message', 'email', 'created')
+    list_filter = ('email', 'created',)
+    search_fields = ('subject', 'email',)
+    search_help_text = 'Konu veya Email'
+
 
 
 @admin.register(SubscriptModel)

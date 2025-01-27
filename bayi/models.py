@@ -118,6 +118,21 @@ class CaseModel(models.Model):
             pass
 
 
+class Contact(models.Model):
+    subject = models.CharField(max_length=100, verbose_name='Konu')
+    name = models.CharField(max_length=100, verbose_name='Ad Soyad')
+    email = models.EmailField(verbose_name='Email')
+    message = models.TextField(verbose_name='Mesaj')
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.subject
+
+    class Meta:
+        verbose_name = 'İletişim'
+        verbose_name_plural = 'İletişim'
+
+
 class SubscriptModel(models.Model):
     email = models.EmailField(verbose_name='Email adresini giriniz')
 

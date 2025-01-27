@@ -1,5 +1,4 @@
 import uuid
-from django.contrib.admin.models import LogEntry
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
@@ -10,9 +9,9 @@ from django.http import HttpResponseRedirect
 from django.views import generic
 
 from accounts.models import Customer, OrderModel
-from .models import ProductCategory, Product, SubscriptModel, Cart, CartItem
+from .models import ProductCategory, Product, SubscriptModel, Cart, CartItem, Contact
 from django.contrib import messages
-from .forms import CustomerForm, UserForm
+from .forms import CustomerForm, UserForm, ContactForm
 
 
 class CategoriesListView(generic.ListView):
@@ -81,7 +80,6 @@ class ProductDetailView(generic.DetailView):
 
 
 def CartItemsAddView(request, pk):
-
     product = Product.objects.get(pk=pk)
     quantity = float(request.GET.get('quantity', None))
 
@@ -98,7 +96,7 @@ def CartItemsAddView(request, pk):
             cart = Cart.objects.get(user=request.user)
 
         except Cart.DoesNotExist:
-            cart = Cart.objects.create(user=request.user, cart_number=uuid.uuid4(), total=quantity*product.price)
+            cart = Cart.objects.create(user=request.user, cart_number=uuid.uuid4(), total=quantity * product.price)
 
         try:
             cart_item = CartItem.objects.get(cart=cart, product=product)
@@ -116,7 +114,6 @@ def CartItemsAddView(request, pk):
 class ShoppingListView(generic.ListView):
     model = CartItem
     template_name = 'pages/dashboard.html'
-
 
     def get_queryset(self):
         try:
@@ -214,11 +211,13 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
         context['cost'] = remain
         return context
 
+
 def delete_cart(request, cart_number):
     cart = Cart.objects.get(user__username=request.user, cart_number=cart_number)
     cart.delete()
     messages.success(request, 'Sepetinizi sildiniz')
     return redirect('/')
+
 
 def remove_cart_item(request, pk):
     cart_item = CartItem.objects.get(pk=pk)
@@ -226,4 +225,14 @@ def remove_cart_item(request, pk):
     if cart_item.product is not None:
         cart_item.cart.delete()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+def contact_us(request):
+    form = ContactForm(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    return render(request, 'pages/contact.html', {'form': form})
+
 
