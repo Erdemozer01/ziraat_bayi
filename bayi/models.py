@@ -8,6 +8,7 @@ class SettingsSite(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name="Site Adı")
     favicon = models.ImageField(upload_to="favicon", null=True, verbose_name="Favicon", blank=True)
 
+
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
