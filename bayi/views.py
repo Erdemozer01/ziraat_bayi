@@ -1,6 +1,7 @@
 import uuid
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .email import email_sender
 from django.db import models
 from django.shortcuts import render, redirect
 from django.db.models import Q
@@ -12,6 +13,7 @@ from accounts.models import Customer, OrderModel
 from .models import ProductCategory, Product, SubscriptModel, Cart, CartItem, Contact
 from django.contrib import messages
 from .forms import CustomerForm, UserForm, ContactForm
+from django.core.mail import send_mail, settings
 
 
 class CategoriesListView(generic.ListView):
@@ -26,6 +28,7 @@ class CategoriesListView(generic.ListView):
             messages.success(self.request, f'{len(object_list)} ürün bulundu')
         return object_list
 
+
 def ProductListView(request):
     form = ContactForm(request.POST or None)
     object_list = Product.objects.filter(is_stock=True)
@@ -37,8 +40,24 @@ def ProductListView(request):
 
     if request.method == 'POST':
         if form.is_valid():
-            form.save()
+            form.save(commit=False)
             messages.success(request, 'Mesajınız iletilmiştir. En kısa sürede cevap vereceğiz')
+            subject = "İletişim Formu"
+            from_email = settings.EMAIL_HOST_USER
+            context = {
+                'name': form.cleaned_data['name'],
+                'email': form.cleaned_data['email'],
+                'subject': form.cleaned_data['subject'],
+                'message': form.cleaned_data['message'],
+            }
+            email_sender(
+                subject=subject,
+                sender=from_email,
+                recipients=from_email,
+                template='contact',
+                context=context,
+            )
+            form.save()
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
         else:
@@ -48,7 +67,6 @@ def ProductListView(request):
 
 
 class SubscriptView(generic.View):
-
     http_method_names = ['get', 'post']
 
     def get(self, request):
