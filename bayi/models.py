@@ -123,7 +123,8 @@ class Contact(models.Model):
     name = models.CharField(max_length=100, verbose_name='Ad Soyad')
     email = models.EmailField(verbose_name='Email')
     message = models.TextField(verbose_name='Mesaj')
-    created = models.DateTimeField(auto_now_add=True)
+
+    created = models.DateTimeField(auto_now_add=True, verbose_name='Gönderilme Tarihi')
 
     def __str__(self):
         return self.subject

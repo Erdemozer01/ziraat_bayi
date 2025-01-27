@@ -232,9 +232,9 @@ def contact_us(request):
     if request.method == 'POST':
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         else:
             form = ContactForm()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     return render(request, 'pages/contact.html', {'form': form})
 
