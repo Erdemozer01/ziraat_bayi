@@ -2,7 +2,7 @@ from django import forms
 from accounts.models import Customer
 from django.contrib.auth.models import User
 
-from bayi.models import Product, Contact
+from bayi.models import Contact
 
 
 class UserForm(forms.ModelForm):

@@ -5,10 +5,14 @@ from .models import Product, ProductCategory, Header, SettingsSite, SubscriptMod
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ('subject', 'message', 'email', 'created')
+    list_display = ('name', 'subject', 'email', 'created')
     list_filter = ('email', 'created',)
     search_fields = ('subject', 'email',)
     search_help_text = 'Konu veya Email'
+
+
+
+
 
 
 

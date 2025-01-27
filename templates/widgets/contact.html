@@ -2,7 +2,9 @@
 
 <!-- İletişim -->
 <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+
     <div class="modal-dialog">
+
         <div class="modal-content">
 
             <div class="modal-header">
@@ -13,7 +15,6 @@
             <form action="{% url 'bayi:contact' %}" method="get">
 
                 <div class="modal-body">
-
                     <div class="mb-3">
 
                         <label for="subjectFormControlInput" class="form-label mt-1">Konu</label>
@@ -31,14 +32,14 @@
                         <label for="messageFormControlInput" class="form-label mt-1">Mesaj</label>
                         <input type="text" class="form-control mt-1" id="messageFormControlInput"
                                placeholder="Mesajınız" name="message" value="{{ request.GET.message }}" required>
-
                     </div>
-
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
                     <button type="submit" class="btn btn-primary">Gönder</button>
                 </div>
+
             </form>
 
         </div>

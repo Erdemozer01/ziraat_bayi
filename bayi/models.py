@@ -130,6 +130,7 @@ class Contact(models.Model):
         return self.subject
 
     class Meta:
+        ordering = ['-created']
         verbose_name = 'İletişim'
         verbose_name_plural = 'İletişim'
 

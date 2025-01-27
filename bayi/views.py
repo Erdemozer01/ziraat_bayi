@@ -26,20 +26,30 @@ class CategoriesListView(generic.ListView):
             messages.success(self.request, f'{len(object_list)} ürün bulundu')
         return object_list
 
+def ProductListView(request):
+    form = ContactForm(request.POST or None)
+    object_list = Product.objects.filter(is_stock=True)
+    ara = request.GET.get('ara', None)
 
-class ProductListView(generic.ListView):
-    model = Product
-    template_name = 'pages/bayi.html'
+    if ara:
+        object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name__icontains=ara))
+        messages.success(request, f'{len(object_list)} ürün bulundu')
 
-    def get_queryset(self):
-        object_list = Product.objects.filter(is_stock=True)
-        ara = self.request.GET.get('ara', None)
-        if ara:
-            object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name__icontains=ara))
-        return object_list
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Mesajınız iletilmiştir. En kısa sürede cevap vereceğiz')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+        else:
+            form = ContactForm(request.POST or None)
+
+    return render(request, 'pages/bayi.html', {'object_list': object_list, 'form': form})
 
 
 class SubscriptView(generic.View):
+
+    http_method_names = ['get', 'post']
 
     def get(self, request):
         email = request.GET.get('email', None)
@@ -232,14 +242,10 @@ def remove_cart_item(request, pk):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-class ContactView(generic.View):
-
-    http_method_names = ['get', 'post']
-
-    def get(self, request):
-        subject = request.GET.get('subject', None)
-        name = request.GET.get('name', None)
-        email = request.GET.get('email', None)
-        message = request.GET.get('message', None)
-        Contact.objects.create(name=name, email=email, subject=subject, message=message)
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+def contact(request):
+    name = request.GET.get('name', None)
+    email = request.GET.get('email', None)
+    message = request.GET.get('message', None)
+    subject = request.GET.get('subject', None)
+    Contact.objects.create(name=name, email=email, message=message, subject=subject)
+    return redirect('/')

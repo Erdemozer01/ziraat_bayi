@@ -1,5 +1,5 @@
 {% extends 'layout/base.html' %}
-{% load static settings %}
+{% load static settings django_bootstrap5 %}
 {% get_setting as obj %}
 
 {% block title %}
@@ -14,5 +14,21 @@
 {% endblock %}
 
 {% block content %}
-   {% include 'includes/bayi/cards.html' %}
+    {% include 'includes/bayi/cards.html' %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="px-4 pt-5 my-5 border-bottom" id="contact">
+            <h1 class="display-5 fw-bold text-body-emphasis text-center fst-italic">İletişim Formu</h1>
+            <hr class="mb-5">
+            <div class="col-lg-6 mx-auto">
+                {% bootstrap_form form %}
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
+                    <button type="submit" class="w-100 btn btn-primary px-4 btn-lg">Gönder</button>
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+
 {% endblock %}
