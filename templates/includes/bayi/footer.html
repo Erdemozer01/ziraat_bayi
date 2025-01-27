@@ -8,9 +8,9 @@
         <a href="#"
            class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
             {% if obj.favicon %}
-                <img src="{{ obj.favicon.url }}" alt="" width="40" height="40">
+                <img src="{{ obj.favicon.url }}" alt="" width="40" height="40" class="rounded-circle" />
             {% else %}
-                <img src="{% static 'assets/img/favicons/favicon.png' %}" alt="" width="40" height="40">
+                <img src="{% static 'assets/img/favicons/favicon.png' %}" alt="" width="40" height="40" class="rounded-circle" />
             {% endif %}
 
         </a>
