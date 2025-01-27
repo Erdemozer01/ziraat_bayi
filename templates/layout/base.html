@@ -12,7 +12,7 @@
 
     <meta name="description" content="">
     <meta name="author" content="Mehmet Erdem ÖZER">
-    <meta name="generator" content="Hugo 0.122.0">
+    <meta name="generator" content="">
     <meta name="theme-color" content="{% if 'admin' in request.get_full_path %}#417690{% else %}#712cf9{% endif %}">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -42,6 +42,8 @@
     {% endif %}
 
     {% include 'widgets/subscript.html' %}
+
+    {% include 'widgets/contact.html' %}
 
     {% if messages %}
         {% include 'widgets/messages.html' %}

@@ -36,7 +36,6 @@ class ProductListView(generic.ListView):
         ara = self.request.GET.get('ara', None)
         if ara:
             object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name__icontains=ara))
-            messages.success(self.request, f'{len(object_list)} ürün bulundu')
         return object_list
 
 
@@ -92,6 +91,7 @@ def CartItemsAddView(request, pk):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     if quantity:
+
         try:
             cart = Cart.objects.get(user=request.user)
 
@@ -99,10 +99,12 @@ def CartItemsAddView(request, pk):
             cart = Cart.objects.create(user=request.user, cart_number=uuid.uuid4(), total=quantity * product.price)
 
         try:
+
             cart_item = CartItem.objects.get(cart=cart, product=product)
             cart_item.quantity += quantity
             cart_item.sub_total += product.price * quantity
             cart_item.save()
+
         except CartItem.DoesNotExist:
             CartItem.objects.create(cart=cart, product=product, quantity=quantity, sub_total=product.price * quantity)
 
@@ -166,6 +168,9 @@ def checkout(request, user, cart_number):
                     item.product.stock -= item.quantity
                     item.product.ordered += item.quantity
                     item.product.save()
+                    if item.product.stock == 0:
+                        item.product.is_stock = False
+                    item.product.save()
 
                 order.save()
 
@@ -227,15 +232,14 @@ def remove_cart_item(request, pk):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-def contact_us(request):
-    form = ContactForm(request.POST or None)
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-        else:
-            form = ContactForm()
+class ContactView(generic.View):
+
+    http_method_names = ['get', 'post']
+
+    def get(self, request):
+        subject = request.GET.get('subject', None)
+        name = request.GET.get('name', None)
+        email = request.GET.get('email', None)
+        message = request.GET.get('message', None)
+        Contact.objects.create(name=name, email=email, subject=subject, message=message)
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-    return render(request, 'pages/contact.html', {'form': form})
-
-

@@ -14,5 +14,5 @@ urlpatterns = [
     path('siparişlerim/<user>/', views.OrderListView.as_view(), name='shoppinglist'),
     path('delete-cart/<cart_number>/', views.delete_cart, name='delete_cart'),
     path('remove-cart-item/<pk>/', views.remove_cart_item, name='remove_cart_item'),
-    path('contact/', views.contact_us, name='contact'),
+    path('contact/', views.ContactView.as_view(), name='contact'),
 ]

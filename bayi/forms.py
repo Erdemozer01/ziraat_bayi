@@ -42,7 +42,7 @@ class CustomerInformationModelForm(forms.ModelForm):
 class ContactForm(forms.ModelForm):
     class Meta:
         model = Contact
-        fields = ('name', 'subject', 'message', 'email', )
+        fields = ('name', 'subject', 'email', 'message')
         widgets = {
             'message': forms.Textarea(attrs={'class': 'form-control', 'rows': '3'}),
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
