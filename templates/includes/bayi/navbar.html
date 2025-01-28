@@ -2,8 +2,7 @@
 {% get_setting as obj %}
 {% get_product_category as category_list %}
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded" aria-label="Offcanvas navbar large"
-     style="margin-top: 1%; margin-bottom: 1%;">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded fixed-top" aria-label="Offcanvas navbar large">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">{{ obj.name.title }}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar2"
