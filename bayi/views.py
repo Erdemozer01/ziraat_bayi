@@ -307,9 +307,9 @@ def remove_cart_item(request, pk):
 def MyInformationDashBoardView(request, pk, user):
     if request.user.username == user:
         try:
-            customer = Customer.objects.get(user=pk)
+            customer = Customer.objects.get(user=request.user)
         except Customer.DoesNotExist:
-            customer = Customer.objects.create(user=pk)
+            customer = Customer.objects.create(user=request.user)
         form = CustomerInformationModelForm(request.POST or None, instance=customer)
         form2 = UserForm(request.POST or None, instance=request.user)
         if request.method == 'POST':
