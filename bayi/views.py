@@ -83,7 +83,7 @@ class CategoriesListView(generic.ListView):
         if ara:
             object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name__icontains=ara))
             messages.success(self.request,
-                             f'{self.kwargs['slug'].title()}, ürünlerinde {len(object_list)} ürün bulundu')
+                             f'{self.kwargs['slug']}, ürünlerinde {len(object_list)} ürün bulundu')
         return object_list
 
 
