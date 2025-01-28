@@ -44,7 +44,9 @@
     {% include 'widgets/subscript.html' %}
 
     {% if messages %}
-        {% include 'widgets/messages.html' %}
+        <div style="margin-top: 10rem;">
+            {% include 'widgets/messages.html' %}
+        </div>
     {% else %}
         {% if request.path == '/' %}
             {% include 'includes/bayi/header.html' %}
