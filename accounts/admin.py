@@ -11,7 +11,7 @@ class CustomerAdmin(admin.ModelAdmin):
     list_filter = ('is_loan', 'date')
     search_fields = ('user__username', 'telephone')
     search_help_text = 'Müşteri adı veya telefon numarasına göre arama yap'
-    readonly_fields = ('user', 'telephone', 'address', 'total_loan')
+    readonly_fields = ('user', 'telephone', 'address', 'total_loan', 'bought', 'is_loan', 'total_pay')
 
 
 @admin.register(OrderModel)

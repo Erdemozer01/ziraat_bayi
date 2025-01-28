@@ -17,6 +17,10 @@ from .forms import CustomerForm, UserForm, ContactForm, CustomerInformationModel
 from django.core.mail import settings
 
 
+class AboutView(generic.TemplateView):
+    template_name = 'pages/about.html'
+
+
 class DashboardView(generic.ListView):
     model = Customer
     template_name = 'pages/dashboard.html'
@@ -163,7 +167,6 @@ def CartItemsAddView(request, pk):
 
         try:
             cart = Cart.objects.get(user=request.user)
-
         except Cart.DoesNotExist:
             cart = Cart.objects.create(user=request.user, cart_number=uuid.uuid4(), total=quantity * product.price)
 
@@ -205,6 +208,7 @@ class ShoppingListView(generic.ListView):
 
 
 def checkout(request, user, cart_number):
+
     if request.user.username == user:
 
         cart_items = CartItem.objects.filter(cart__user__username=user)
@@ -302,8 +306,11 @@ def remove_cart_item(request, pk):
 
 def MyInformationDashBoardView(request, pk, user):
     if request.user.username == user:
-
-        form = CustomerInformationModelForm(request.POST or None, instance=request.user)
+        try:
+            customer = Customer.objects.get(user=pk)
+        except Customer.DoesNotExist:
+            customer = Customer.objects.create(user=pk)
+        form = CustomerInformationModelForm(request.POST or None, instance=customer)
         form2 = UserForm(request.POST or None, instance=request.user)
         if request.method == 'POST':
             if form.is_valid() or form2.is_valid():

@@ -13,9 +13,7 @@
     {% if user.is_authenticated %}
         <div class="container-fluid">
             <div class="row">
-
                 {% include 'includes/dashboard/sidebar.html' %}
-
                 {% if user.is_superuser or user.is_staff %}
                     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 
@@ -49,8 +47,7 @@
 
                     </main>
                 {% else %}
-                    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" style="margin-bottom: 10rem">
-
+                    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                             <h1 class="h2">Dashboard</h1>
                             <div class="btn-toolbar mb-2 mb-md-0">
@@ -67,8 +64,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        {% include 'widgets/messages.html' %}
 
                         {% if 'sepetim' in request.path %}
                             <h2>Sepetim</h2>

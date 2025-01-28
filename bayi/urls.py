@@ -5,6 +5,7 @@ app_name = 'bayi'
 
 urlpatterns = [
     path('', views.ProductListView, name='anasayfa'),
+    path('about/', views.AboutView.as_view(), name='about'),
     path('<slug>/', views.CategoriesListView, name='category_list'),
     path('abone-ol', views.SubscriptView.as_view(), name='abone_ol'),
     path('ayrıntılar/<pk>/<slug>/<name>/', views.ProductDetailView.as_view(), name='product_detail'),
