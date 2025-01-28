@@ -19,7 +19,7 @@
                 most popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system,
                 extensive prebuilt components, and powerful JavaScript plugins.</p>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <a href="/#contact"><button type="button" class="btn btn-primary btn-lg px-4 gap-3">İletişim</button></a>
+                <a href="{% url 'bayi:about' %}#contact"><button type="button" class="btn btn-primary btn-lg px-4 gap-3">İletişim</button></a>
             </div>
         </div>
     </div>
@@ -34,8 +34,7 @@
                     </svg>
                 </div>
                 <h3 class="fs-2 text-body-emphasis">Telefon</h3>
-                <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence
-                    and probably just keep going until we run out of words.</p>
+                <p>{{ site.phone }}</p>
             </div>
             <div class="feature col">
                 <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
@@ -44,8 +43,7 @@
                     </svg>
                 </div>
                 <h3 class="fs-2 text-body-emphasis">Adres</h3>
-                <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence
-                    and probably just keep going until we run out of words.</p>
+                <p>{{ site.address }}.</p>
             </div>
             <div class="feature col">
                 <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
@@ -54,8 +52,7 @@
                     </svg>
                 </div>
                 <h3 class="fs-2 text-body-emphasis">Email</h3>
-                <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence
-                    and probably just keep going until we run out of words.</p>
+                <p>{{ site.email }}</p>
             </div>
         </div>
     </div>

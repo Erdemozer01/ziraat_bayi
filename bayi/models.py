@@ -7,7 +7,9 @@ from django_ckeditor_5.fields import CKEditor5Field
 class SettingsSite(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name="Site Adı")
     favicon = models.ImageField(upload_to="favicon", null=True, verbose_name="Favicon", blank=True)
-
+    phone = models.CharField(max_length=11, null=True, verbose_name="Telefon No", blank=True)
+    address = models.TextField(null=True, verbose_name="Adres", blank=True)
+    email = models.EmailField(max_length=254, null=True, verbose_name="Email", blank=True)
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

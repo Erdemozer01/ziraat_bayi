@@ -11,7 +11,7 @@ from django.http import HttpResponseRedirect
 from django.views import generic
 
 from accounts.models import Customer, OrderModel
-from .models import ProductCategory, Product, SubscriptModel, Cart, CartItem, Contact, CaseModel
+from .models import ProductCategory, Product, SubscriptModel, Cart, CartItem, Contact, CaseModel, SettingsSite
 from django.contrib import messages
 from .forms import CustomerForm, UserForm, ContactForm, CustomerInformationModelForm
 from django.core.mail import settings
@@ -19,6 +19,7 @@ from django.core.mail import settings
 
 def AboutView(request):
     form = ContactForm(request.POST or None)
+    site = SettingsSite.objects.latest('created')
     if request.method == 'POST':
         if form.is_valid():
 
@@ -53,7 +54,7 @@ def AboutView(request):
 
             form = ContactForm()
 
-    return render(request, 'pages/about.html', {'form': form})
+    return render(request, 'pages/about.html', {'form': form, 'site': site})
 
 
 class DashboardView(generic.ListView):

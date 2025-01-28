@@ -21,7 +21,7 @@ class SubscriptAdmin(admin.ModelAdmin):
 
 @admin.register(SettingsSite)
 class SettingsSiteAdmin(admin.ModelAdmin):
-    list_display = ('name', 'created', 'updated')
+    list_display = ('name', 'email', 'phone', 'address', 'created', 'updated')
 
     def has_add_permission(self, request):
         if SettingsSite.objects.count() == 0:
