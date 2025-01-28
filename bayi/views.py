@@ -80,10 +80,11 @@ class CategoriesListView(generic.ListView):
     def get_queryset(self):
         object_list = Product.objects.filter(is_stock=True, category__slug=self.kwargs['slug'])
         ara = self.request.GET.get('ara', None)
+        category = str(self.kwargs['slug'].title().replace('-', ' '))
         if ara:
             object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name__icontains=ara))
             messages.success(self.request,
-                             f'{self.kwargs['slug']}, ürünlerinde {len(object_list)} ürün bulundu')
+                             f'{category}, ürünlerinde {len(object_list)} ürün bulundu')
         return object_list
 
 
