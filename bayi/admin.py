@@ -11,11 +11,6 @@ class ContactAdmin(admin.ModelAdmin):
     search_help_text = 'Konu veya Email'
 
 
-
-
-
-
-
 @admin.register(SubscriptModel)
 class SubscriptAdmin(admin.ModelAdmin):
     list_display = ('email',)
@@ -104,7 +99,6 @@ class CaseModelAdmin(admin.ModelAdmin):
         elif len(queryset) == 1:
 
             for case in queryset:
-
                 case.order.remain += case.total
                 case.order.save()
 
@@ -112,6 +106,5 @@ class CaseModelAdmin(admin.ModelAdmin):
                 case.order.customer.total_pay -= case.total
                 case.order.customer.is_loan = True
                 case.order.customer.save()
-
 
             return super().delete_queryset(request, queryset)

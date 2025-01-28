@@ -108,6 +108,7 @@ class CaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Ödeme Tarihi')
 
     class Meta:
+        ordering = ('-created_at',)
         verbose_name = 'Kasa'
         verbose_name_plural = 'Kasa'
 

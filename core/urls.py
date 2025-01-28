@@ -12,7 +12,7 @@ urlpatterns = [
     path("ckeditor5/image_upload/", upload_file, name="ckeditor_upload_file"),
     path(r"images-handler/", include("galleryfield.urls")),
     path('', include('bayi.urls')),
-    path('dashboard/', include('accounts.urls')),
+    path('', include('accounts.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
