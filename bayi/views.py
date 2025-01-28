@@ -17,8 +17,43 @@ from .forms import CustomerForm, UserForm, ContactForm, CustomerInformationModel
 from django.core.mail import settings
 
 
-class AboutView(generic.TemplateView):
-    template_name = 'pages/about.html'
+def AboutView(request):
+    form = ContactForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+
+            form.save(commit=False)
+
+            messages.success(request, 'Mesajınız iletilmiştir. En kısa sürede cevap vereceğiz')
+
+            subject = "İletişim Formu"
+
+            from_email = settings.EMAIL_HOST_USER
+
+            context = {
+                'name': form.cleaned_data['name'],
+                'email': form.cleaned_data['email'],
+                'subject': form.cleaned_data['subject'],
+                'message': form.cleaned_data['message'],
+            }
+
+            email_sender(
+                subject=subject,
+                sender=from_email,
+                recipients=from_email,
+                template='contact',
+                context=context,
+            )
+
+            form.save()
+
+            return HttpResponseRedirect('/')
+
+        else:
+
+            form = ContactForm()
+
+    return render(request, 'pages/about.html', {'form': form})
 
 
 class DashboardView(generic.ListView):
@@ -38,77 +73,31 @@ class DashboardView(generic.ListView):
         return context
 
 
-def CategoriesListView(request, slug):
-    form = ContactForm(request.POST or None)
-    object_list = Product.objects.filter(is_stock=True, category__slug=slug)
-    ara = request.GET.get('ara', None)
+class CategoriesListView(generic.ListView):
+    model = Product
+    template_name = 'pages/bayi.html'
 
-    if ara:
-        object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name__icontains=ara))
-        messages.success(request, f'{slug.title()}, ürünlerinde {len(object_list)} ürün bulundu')
-
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save(commit=False)
-            messages.success(request, 'Mesajınız iletilmiştir. En kısa sürede cevap vereceğiz')
-            subject = "İletişim Formu"
-            from_email = settings.EMAIL_HOST_USER
-            context = {
-                'name': form.cleaned_data['name'],
-                'email': form.cleaned_data['email'],
-                'subject': form.cleaned_data['subject'],
-                'message': form.cleaned_data['message'],
-            }
-            email_sender(
-                subject=subject,
-                sender=from_email,
-                recipients=from_email,
-                template='contact',
-                context=context,
-            )
-            form.save()
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-        else:
-            form = ContactForm(request.POST or None)
-
-    return render(request, 'pages/bayi.html', {'object_list': object_list, 'form': form})
+    def get_queryset(self):
+        object_list = Product.objects.filter(is_stock=True, category__slug=self.kwargs['slug'])
+        ara = self.request.GET.get('ara', None)
+        if ara:
+            object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name__icontains=ara))
+            messages.success(self.request,
+                             f'{self.kwargs['slug'].title()}, ürünlerinde {len(object_list)} ürün bulundu')
+        return object_list
 
 
-def ProductListView(request):
-    form = ContactForm(request.POST or None)
-    object_list = Product.objects.filter(is_stock=True)
+class ProductListView(generic.ListView):
+    model = Product
+    template_name = 'pages/bayi.html'
 
-    ara = request.GET.get('ara', None)
-
-    if ara:
-        object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name__icontains=ara))
-        messages.success(request, f'{len(object_list)} ürün bulundu')
-
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save(commit=False)
-            messages.success(request, 'Mesajınız iletilmiştir. En kısa sürede cevap vereceğiz')
-            subject = "İletişim Formu"
-            from_email = settings.EMAIL_HOST_USER
-            context = {
-                'name': form.cleaned_data['name'],
-                'email': form.cleaned_data['email'],
-                'subject': form.cleaned_data['subject'],
-                'message': form.cleaned_data['message'],
-            }
-            email_sender(
-                subject=subject,
-                sender=from_email,
-                recipients=from_email,
-                template='contact',
-                context=context,
-            )
-            form.save()
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-        else:
-            form = ContactForm(request.POST or None)
-
-    return render(request, 'pages/bayi.html', {'object_list': object_list, 'form': form})
+    def get_queryset(self):
+        object_list = Product.objects.filter(is_stock=True)
+        ara = self.request.GET.get('ara', None)
+        if ara:
+            object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name__icontains=ara))
+            messages.success(self.request, f'{len(object_list)} ürün bulundu')
+        return object_list
 
 
 class SubscriptView(generic.View):
@@ -208,7 +197,6 @@ class ShoppingListView(generic.ListView):
 
 
 def checkout(request, user, cart_number):
-
     if request.user.username == user:
 
         cart_items = CartItem.objects.filter(cart__user__username=user)
