@@ -36,7 +36,7 @@ def CategoriesListView(request, slug):
 
     if ara:
         object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name__icontains=ara))
-        messages.success(request, f'{slug.title().replace('-', ' ')}, ürünlerinde {len(object_list)} ürün bulundu')
+        messages.success(request, f'{slug.title()}, ürünlerinde {len(object_list)} ürün bulundu')
 
 
     if request.method == 'POST':
