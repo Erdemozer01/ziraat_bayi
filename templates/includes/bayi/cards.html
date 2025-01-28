@@ -2,7 +2,7 @@
 
 <!-- Bayi -->
 {% if object_list %}
-    <h3 class="pb-4 mb-4 fst-italic border-bottom" style="margin-top: 4%">
+    <h3 class="pb-4 mb-4 fst-italic border-bottom" style="margin-top: 5rem">
         {% if request.path == '/' %}
             Tüm Ürünler
         {% else %}
@@ -10,7 +10,7 @@
         {% endif %}
     </h3>
     <!-- Ürünler -->
-    <div class="row mb-2" style="margin-top: 2rem;">
+    <div class="row mb-2">
         {% for object in object_list %}
             <!-- {{ object.name }} -->
             <div class="col-md-6">
