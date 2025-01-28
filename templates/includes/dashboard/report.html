@@ -4,16 +4,15 @@
         <thead>
         <tr>
             <th scope="col">Günlük</th>
-            <th scope="col">Haftalık</th>
             <th scope="col">Aylık</th>
             <th scope="col">Yıllık</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            {% for income in income_list %}
-                <td>{{ income.total }} TL </td>
-            {% endfor %}
+            <td>{{ daily }} TL </td>
+            <td>{{ month }} TL </td>
+            <td>{{ year }} TL </td>
         </tr>
 
         </tbody>

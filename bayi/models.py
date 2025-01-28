@@ -105,7 +105,10 @@ class CartItem(models.Model):
 class CaseModel(models.Model):
     order = models.ForeignKey('accounts.OrderModel', on_delete=models.CASCADE, verbose_name='Sipariş')
     total = models.FloatField(verbose_name='Ödenen')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Ödeme Tarihi')
+    created_at = models.DateTimeField(verbose_name='Ödeme Tarihi', auto_now_add=True)
+
+    def __str__(self):
+        return str(self.order) + ', ' + str(self.total) + ' ' + 'TL'
 
     class Meta:
         ordering = ('-created_at',)

@@ -88,6 +88,7 @@ class CaseModelAdmin(admin.ModelAdmin):
     search_help_text = 'Sipariş Numarası, ödeme tutarı, kullanıcı adı göre ara...'
     readonly_fields = ('order', 'created_at', 'total')
 
+
     def has_add_permission(self, request):
         return False
 

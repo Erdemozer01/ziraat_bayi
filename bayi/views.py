@@ -4,8 +4,8 @@ from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .email import email_sender
 from django.db import models
-from django.shortcuts import render, redirect
-from django.db.models import Q
+from django.shortcuts import render, redirect, reverse
+from django.db.models import Q, Sum
 from django.http import HttpResponseRedirect
 
 from django.views import generic
@@ -24,21 +24,46 @@ class DashboardView(generic.ListView):
         self, *, object_list = ..., **kwargs
     ):
         context = super().get_context_data(**kwargs)
-        context['income_list'] = CaseModel.objects.all()
+        context['daily'] = CaseModel.objects.filter(created_at__day=timezone.now().day).aggregate(Sum('total'))['total__sum']
+        context['month'] = CaseModel.objects.filter(created_at__month=timezone.now().month).aggregate(Sum('total'))['total__sum']
+        context['year'] = CaseModel.objects.filter(created_at__year=timezone.now().year).aggregate(Sum('total'))['total__sum']
         return context
 
+def CategoriesListView(request, slug):
+    form = ContactForm(request.POST or None)
+    object_list = Product.objects.filter(is_stock=True, category__slug=slug)
+    ara = request.GET.get('ara', None)
 
-class CategoriesListView(generic.ListView):
-    model = ProductCategory
-    template_name = 'pages/bayi.html'
+    if ara:
+        object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name__icontains=ara))
+        messages.success(request, f'{str(slug).title().replace('-', ' ')}, ürünlerinde {len(object_list)} ürün bulundu')
 
-    def get_queryset(self):
-        object_list = Product.objects.filter(category__slug=self.kwargs['slug'], is_stock=True)
-        ara = self.request.GET.get('ara', None)
-        if ara:
-            object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name=ara))
-            messages.success(self.request, f'{len(object_list)} ürün bulundu')
-        return object_list
+
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save(commit=False)
+            messages.success(request, 'Mesajınız iletilmiştir. En kısa sürede cevap vereceğiz')
+            subject = "İletişim Formu"
+            from_email = settings.EMAIL_HOST_USER
+            context = {
+                'name': form.cleaned_data['name'],
+                'email': form.cleaned_data['email'],
+                'subject': form.cleaned_data['subject'],
+                'message': form.cleaned_data['message'],
+            }
+            email_sender(
+                subject=subject,
+                sender=from_email,
+                recipients=from_email,
+                template='contact',
+                context=context,
+            )
+            form.save()
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        else:
+            form = ContactForm(request.POST or None)
+
+    return render(request, 'pages/bayi.html', {'object_list': object_list, 'form': form})
 
 
 def ProductListView(request):
