@@ -16,18 +16,23 @@ from django.contrib import messages
 from .forms import CustomerForm, UserForm, ContactForm, CustomerInformationModelForm
 from django.core.mail import settings
 
+
 class DashboardView(generic.ListView):
     model = Customer
     template_name = 'pages/dashboard.html'
 
     def get_context_data(
-        self, *, object_list = ..., **kwargs
+            self, *, object_list=..., **kwargs
     ):
         context = super().get_context_data(**kwargs)
-        context['daily'] = CaseModel.objects.filter(created_at__day=timezone.now().day).aggregate(Sum('total'))['total__sum']
-        context['month'] = CaseModel.objects.filter(created_at__month=timezone.now().month).aggregate(Sum('total'))['total__sum']
-        context['year'] = CaseModel.objects.filter(created_at__year=timezone.now().year).aggregate(Sum('total'))['total__sum']
+        context['daily'] = CaseModel.objects.filter(created_at__day=timezone.now().day).aggregate(Sum('total'))[
+            'total__sum']
+        context['month'] = CaseModel.objects.filter(created_at__month=timezone.now().month).aggregate(Sum('total'))[
+            'total__sum']
+        context['year'] = CaseModel.objects.filter(created_at__year=timezone.now().year).aggregate(Sum('total'))[
+            'total__sum']
         return context
+
 
 def CategoriesListView(request, slug):
     form = ContactForm(request.POST or None)
@@ -37,7 +42,6 @@ def CategoriesListView(request, slug):
     if ara:
         object_list = object_list.filter(Q(name__icontains=ara) | Q(category__name__icontains=ara))
         messages.success(request, f'{slug.title()}, ürünlerinde {len(object_list)} ürün bulundu')
-
 
     if request.method == 'POST':
         if form.is_valid():
@@ -273,10 +277,10 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return OrderModel.objects.filter(customer__user=self.request.user)
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        remain = OrderModel.objects.filter(customer__user=self.request.user).aggregate(models.Sum('remain'))['remain__sum']
+        remain = OrderModel.objects.filter(customer__user=self.request.user).aggregate(models.Sum('remain'))[
+            'remain__sum']
         context['cost'] = remain
         return context
 
@@ -310,4 +314,3 @@ def MyInformationDashBoardView(request, pk, user):
         messages.info(request, 'Yetkisiz işlem')
         return redirect('/')
     return render(request, 'pages/dashboard.html', {'form': form, 'form2': form2})
-
