@@ -341,6 +341,7 @@ class OrderMonthlyListView(LoginRequiredMixin, generic.MonthArchiveView):
     context_object_name = 'monthly_list'
     allow_future = True
     date_field = 'order_date'
+    queryset = OrderModel.objects.all()
 
     def get(self, request, *args, **kwargs):
         if request.user.is_superuser:
