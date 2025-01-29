@@ -4,14 +4,14 @@ from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .email import email_sender
 from django.db import models
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect
 from django.db.models import Q, Sum
 from django.http import HttpResponseRedirect
 
 from django.views import generic
 
 from accounts.models import Customer, OrderModel
-from .models import ProductCategory, Product, SubscriptModel, Cart, CartItem, Contact, CaseModel, SettingsSite
+from .models import Product, SubscriptModel, Cart, CartItem, Contact, CaseModel, SettingsSite
 from django.contrib import messages
 from .forms import CustomerForm, UserForm, ContactForm, CustomerInformationModelForm
 from django.core.mail import settings
