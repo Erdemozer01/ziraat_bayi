@@ -18,5 +18,5 @@ urlpatterns = [
     path('delete-cart/<cart_number>/', views.delete_cart, name='delete_cart'),
     path('remove-cart-item/<pk>/', views.remove_cart_item, name='remove_cart_item'),
     path('mark_as_read/<pk>/', views.mark_as_read, name='mark_as_read'),
-    path("<int:year>/<str:month>/", views.OrderMonthlyListView.as_view(), name='monthly_list'),
+    path("monthly/<int:year>/<str:month>/", views.OrderMonthlyListView.as_view(), name='monthly_list'),
 ]
