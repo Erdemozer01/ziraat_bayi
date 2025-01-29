@@ -57,11 +57,17 @@
 
                             {% if user.is_authenticated %}
                                 {% if user.is_superuser or user.is_staff %}
-                                    <li><a class="dropdown-item"
-                                           href="{% url 'bayi:dashboard' user %}">Dashboard</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'admin:index' %}bayi/product/add/">Ürün
-                                        Ekle</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin Paneli</a></li>
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'bayi:dashboard' user %}"><i class="bi bi-speedometer"></i> Dashboard</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'admin:index' %}bayi/product/add/">
+                                            <i class="bi bi-file-earmark-plus-fill"></i> Ürün Ekle</a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'admin:index' %}"><i class="bi bi-person-circle"></i> Admin Paneli</a>
+                                    </li>
 
                                 {% else %}
                                     <li><a class="dropdown-item" aria-current="page"
