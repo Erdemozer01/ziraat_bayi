@@ -35,14 +35,14 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li><a class="dropdown-item" href="#">Günlük Satışlar</a></li>
-                                        <li><a class="dropdown-item" href="#">Aylık Satışlar</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'bayi:monthly_list' year_int month_name %}">Aylık Satışlar</a></li>
                                         <li><a class="dropdown-item" href="#">Yıllık Satışlar</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
-                        <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+
                         {% include 'includes/dashboard/report.html' %}
 
                     </main>

@@ -333,3 +333,28 @@ def mark_as_read(request, pk):
         obj.save()
         messages.info(request, 'Okudundu olarak işaretlendi')
     return redirect('/')
+
+
+class OrderMonthlyListView(LoginRequiredMixin, generic.MonthArchiveView):
+    model = OrderModel
+    template_name = 'pages/dashboard.html'
+    context_object_name = 'monthly_list'
+    allow_future = True
+    date_field = 'order_date'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            return super().get(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+    def get_context_data(
+        self, *, object_list = ..., **kwargs
+    ):
+        context = super().get_context_data(**kwargs)
+        context['year_int'] = self.get_year()
+        context['month_name'] = self.get_month()
+        return context
+
+

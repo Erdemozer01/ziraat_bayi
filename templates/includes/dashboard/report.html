@@ -1,3 +1,42 @@
+{% if 'monthly' in request.path %}
+    {% if monthly_list %}
+        {% for order in monthly_list %}
+            {% if forloop.first %}
+                <h2>{{ order.order_date.month|date:'F' }}</h2>
+            {% endif %}
+        {% endfor %}
+
+        <div class="table-responsive small">
+            <table class="table table-striped table-sm">
+
+                <thead>
+                <tr>
+                    <th scope="col">Müşteri</th>
+                    <th scope="col">Ürün</th>
+                    <th scope="col">Adet</th>
+                    <th scope="col">Satınalma</th>
+                    <th scope="col">Toplam</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr>
+                    {% for order in monthly_list %}
+                        <td>{{ order.customer.user }}</td>
+                        <td>{{ order.product }}</td>
+                        <td>{{ order.quantity }}</td>
+                        <td>{{ order.order_date }}</td>
+                        <td>{{ order.total }}</td>
+                    {% endfor %}
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endif %}
+
 <h2>Kazançlar</h2>
 <div class="table-responsive small">
     <table class="table table-striped table-sm">
@@ -10,9 +49,9 @@
         </thead>
         <tbody>
         <tr>
-            <td>{{ daily }} TL </td>
-            <td>{{ month }} TL </td>
-            <td>{{ year }} TL </td>
+            <td>{{ daily }} TL</td>
+            <td>{{ month }} TL</td>
+            <td>{{ year }} TL</td>
         </tr>
 
         </tbody>
