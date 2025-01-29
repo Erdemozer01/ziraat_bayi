@@ -31,11 +31,20 @@ def AboutView(request):
 
             from_email = settings.EMAIL_HOST_USER
 
+            obj = Contact.objects.create(
+                email=form.cleaned_data['email'],
+                name=form.cleaned_data['name'],
+                subject=form.cleaned_data['subject'],
+                message=form.cleaned_data['message'],
+            )
+
             context = {
                 'name': form.cleaned_data['name'],
                 'email': form.cleaned_data['email'],
                 'subject': form.cleaned_data['subject'],
                 'message': form.cleaned_data['message'],
+                'obj': obj,
+                'site': request.META.get('HTTP_ORIGIN'),
             }
 
             email_sender(
@@ -46,9 +55,9 @@ def AboutView(request):
                 context=context,
             )
 
-            form.save()
 
-            return HttpResponseRedirect('/')
+
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
         else:
 
@@ -71,6 +80,7 @@ class DashboardView(generic.ListView):
             'total__sum']
         context['year'] = CaseModel.objects.filter(created_at__year=timezone.now().year).aggregate(Sum('total'))[
             'total__sum']
+        context['is_read'] = Contact.objects.filter(is_read=False).count()
         return context
 
 
@@ -311,3 +321,12 @@ def MyInformationDashBoardView(request, pk, user):
         messages.info(request, 'Yetkisiz işlem')
         return redirect('/')
     return render(request, 'pages/dashboard.html', {'form': form, 'form2': form2})
+
+
+def mark_as_read(request, pk):
+    if request.user.is_superuser:
+        obj = Contact.objects.get(pk=pk)
+        obj.is_read = True
+        obj.save()
+        messages.info(request, 'Okudundu olarak işaretlendi')
+    return redirect('/')

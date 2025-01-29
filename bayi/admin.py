@@ -5,7 +5,7 @@ from .models import Product, ProductCategory, Header, SettingsSite, SubscriptMod
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ('name', 'subject', 'email', 'created')
+    list_display = ('name', 'subject', 'email', 'is_read', 'created')
     list_filter = ('email', 'created',)
     search_fields = ('subject', 'email',)
     search_help_text = 'Konu veya Email'
@@ -87,7 +87,6 @@ class CaseModelAdmin(admin.ModelAdmin):
     search_fields = ('order__order_number', 'order__cost', 'order__customer__user__username')
     search_help_text = 'Sipariş Numarası, ödeme tutarı, kullanıcı adı göre ara...'
     readonly_fields = ('order', 'created_at', 'total')
-
 
     def has_add_permission(self, request):
         return False

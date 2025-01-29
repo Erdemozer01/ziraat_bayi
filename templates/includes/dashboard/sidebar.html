@@ -120,7 +120,7 @@
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center gap-2 "
                                href="{% url 'admin:index' %}">
-                                <i class="bi bi-person-circle text-danger"></i>
+                                <i class="bi bi-person-circle"></i>
                                 Admin
                             </a>
                         </li>
@@ -134,6 +134,27 @@
                             </svg>
                             Ayarlar
                         </a>
+                    </li>
+
+                    <li class="nav-item">
+                        {% if is_read > 0 %}
+                            <a class="nav-link d-flex align-items-center gap-2 text-danger"
+                               href="{% url 'admin:index' %}bayi/contact/">
+                                <svg class="bi">
+                                    <use xlink:href="#envelope-at"/>
+                                </svg>
+                                Gelen Kutusu {{ is_read }}
+                            </a>
+                        {% else %}
+                            <a class="nav-link d-flex align-items-center gap-2"
+                               href="{% url 'admin:index' %}bayi/contact/">
+                                <svg class="bi">
+                                    <use xlink:href="#envelope-at"/>
+                                </svg>
+                                Gelen Kutusu {{ is_read }}
+                            </a>
+                        {% endif %}
+
                     </li>
 
                     <li class="nav-item">
