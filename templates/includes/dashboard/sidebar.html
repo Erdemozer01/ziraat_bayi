@@ -1,5 +1,6 @@
 {% load settings %}
 {% get_setting as site_name %}
+
 <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
 
     <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu"
@@ -116,6 +117,7 @@
                 <hr class="my-3">
 
                 <ul class="nav flex-column mb-auto">
+
                     {% if request.user.is_superuser %}
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center gap-2 "
@@ -154,7 +156,6 @@
                                 Gelen Kutusu {{ is_read }}
                             </a>
                         {% endif %}
-
                     </li>
 
                     <li class="nav-item">
@@ -178,6 +179,7 @@
                         </form>
 
                     </li>
+
                 </ul>
 
             {% else %}
@@ -211,7 +213,6 @@
                             Bilgilerim
                         </a>
                     </li>
-
                     <li class="nav-item">
                         <a class="nav-link d-flex align-items-center gap-2" href="{% url 'bayi:sepetim' user %}">
                             <svg class="bi">
@@ -252,8 +253,7 @@
                 </ul>
 
             {% endif %}
+
         </div>
-
     </div>
-
 </div>

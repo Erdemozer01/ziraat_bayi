@@ -10,6 +10,9 @@ class ContactAdmin(admin.ModelAdmin):
     search_fields = ('subject', 'email',)
     search_help_text = 'Konu veya Email'
 
+    def has_add_permission(self, request):
+        return False
+
 
 @admin.register(SubscriptModel)
 class SubscriptAdmin(admin.ModelAdmin):
