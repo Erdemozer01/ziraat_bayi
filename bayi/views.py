@@ -19,7 +19,6 @@ from django.core.mail import settings
 
 def AboutView(request):
     form = ContactForm(request.POST or None)
-    site = SettingsSite.objects.latest('created')
     if request.method == 'POST':
         if form.is_valid():
 
