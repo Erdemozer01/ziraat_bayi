@@ -130,7 +130,7 @@ class DashboardView(generic.ListView):
                             [
                                 html.Div(id='table-content', style={'margin-top': '3rem'}),
                                 html.Div(id='table-total', style={'float': 'right'}),
-                            ], md=8, sm=8, lg=8
+                            ], md=8, sm=8, lg=8, align='right'
                         ),
                     ]
                 ),
@@ -184,7 +184,7 @@ class DashboardView(generic.ListView):
                 sort_action='native',
             )
 
-            return table, html.P([total_income], className="float-right")
+            return table, total_income
 
         return super().get(request, *args, **kwargs)
 
