@@ -11,6 +11,7 @@ urlpatterns = [
     path('ckeditor5/', include('django_ckeditor_5.urls')),
     path("ckeditor5/image_upload/", upload_file, name="ckeditor_upload_file"),
     path(r"images-handler/", include("galleryfield.urls")),
+    path('django_plotly_dash/', include('django_plotly_dash.urls')),
     path('', include('bayi.urls')),
     path('', include('accounts.urls')),
 ]

@@ -1,5 +1,5 @@
 {% extends 'layout/base.html' %}
-{% load static django_bootstrap5 %}
+{% load static django_bootstrap5 plotly_dash %}
 
 {% block title %}Dashboard{% endblock %}
 
@@ -24,26 +24,10 @@
                                     <button type="button" class="btn btn-sm btn-outline-secondary">Paylaş</button>
                                     <button type="button" class="btn btn-sm btn-outline-secondary">Çıkart</button>
                                 </div>
-                                <div class="dropdown">
-                                    <a class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1"
-                                       href="#" role="button"
-                                       data-bs-toggle="dropdown" aria-expanded="false">
-                                        <svg class="bi">
-                                            <use xlink:href="#calendar3"/>
-                                        </svg>
-                                        Tarihler
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">Günlük Satışlar</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'bayi:monthly_list' year_int month_name %}">Aylık Satışlar</a></li>
-                                        <li><a class="dropdown-item" href="#">Yıllık Satışlar</a></li>
-                                    </ul>
-                                </div>
                             </div>
                         </div>
 
-
-                        {% include 'includes/dashboard/report.html' %}
+                        {% plotly_app name="IncomeTable" ratio=1 %}
 
                     </main>
                 {% else %}

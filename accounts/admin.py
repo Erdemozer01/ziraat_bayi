@@ -17,7 +17,7 @@ class CustomerAdmin(admin.ModelAdmin):
 @admin.register(OrderModel)
 class OrderModelAdmin(admin.ModelAdmin):
     list_display = ('order_number', 'customer', 'quantity', 'order_date', 'last_date', 'remain', 'cost')
-    list_filter = ('customer', 'last_date')
+    list_filter = ('customer', 'order_date')
     list_editable = ('cost',)
     readonly_fields = ('order_number', 'customer', 'remain', 'product', 'quantity')
     search_fields = ('customer__user__username', 'customer__telephone', 'customer__user__email', 'customer__address')

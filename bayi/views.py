@@ -15,7 +15,12 @@ from .models import Product, SubscriptModel, Cart, CartItem, Contact, CaseModel,
 from django.contrib import messages
 from .forms import CustomerForm, UserForm, ContactForm, CustomerInformationModelForm
 from django.core.mail import settings
+from django_plotly_dash import DjangoDash
+from dash import html, dcc, Output, Input, dash_table
+from collections import OrderedDict
+import pandas as pd
 
+import dash_bootstrap_components as dbc
 
 def AboutView(request):
     form = ContactForm(request.POST or None)
@@ -58,8 +63,6 @@ def AboutView(request):
                 context=context,
             )
 
-
-
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
         else:
@@ -73,16 +76,116 @@ class DashboardView(generic.ListView):
     model = Customer
     template_name = 'pages/dashboard.html'
 
+
+    def get(self, request, *args, **kwargs):
+
+        app = DjangoDash('IncomeTable', external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+        app.layout = dbc.Container(
+            [
+
+                dbc.Label('Kazanç', className='mt-4'),
+
+                dcc.Dropdown(
+                    options={
+                        'günlük': 'Günlük',
+                        'aylık': 'Aylık',
+                        'yıllık': 'Yıllık'
+                    },
+                    value="günlük",
+                    id="dates",
+                    clearable=False,
+                    className="dropdown mb-2",
+                ),
+
+                dbc.Label('Ay'),
+
+                dcc.Dropdown(
+                    id="months",
+                    options=[i for i in range(1, 13)],
+                    value=timezone.now().month,
+                    clearable=False,
+                    className="dropdown mb-2",
+                ),
+
+                dbc.Label('Yıl'),
+
+                dcc.Dropdown(
+                    id="years",
+                    options=[years.order_date.year for years in OrderModel.objects.all()],
+                    value=timezone.now().year,
+                    clearable=False,
+                    className="dropdown mb-4",
+                ),
+
+                html.Div(id='table-content'),
+                html.Div(id='table-total', className="mt-4"),
+            ]
+        )
+
+        @app.callback(
+            Output('table-content', 'children'),
+            Output('table-total', 'children'),
+            Input('dates', 'value'),
+            Input('months', 'value'),
+            Input('years', 'value'),
+        )
+        def update_table(value, month, year):
+
+            global obj
+
+            if value == "günlük":
+                obj = CaseModel.objects.filter(created_at__day=timezone.now().day, created_at__month=month, created_at__year=year)
+
+            elif value == "aylık":
+                obj = CaseModel.objects.filter(created_at__month=month, created_at__year=year)
+
+            elif value == "yıllık":
+                obj = CaseModel.objects.filter(created_at__year=year)
+
+
+            data = OrderedDict(
+                [
+                    ("Ödeme Tarihi", [str(i.created_at.date())  for i in obj.all()]),
+                    ("Müşteri", [str(i.order.customer.user) for i in obj.all()]),
+                    ("Ürünler", [i.order.product.values('name').first().get('name') for i in obj.all()]),
+                    ("Birim Fiyat", [i.order.product.values('price').first().get('price') for i in obj.all()]),
+                    ("Adet", [str(i.order.quantity) for i in obj.all()]),
+                    ("Toplam", [str(i.total) + " " + "TL" for i in obj.all()]),
+                ]
+            )
+
+            data_total = OrderedDict(
+                [
+                    (f"{value} Toplam Kazanç".title(), [obj.aggregate(Sum('total'))['total__sum']]),
+                ]
+            )
+
+            df = pd.DataFrame(data)
+
+            table = dash_table.DataTable(
+                data=df.to_dict('records'),
+                columns=[{'id': c, 'name': c} for c in df.columns],
+                page_size=20,
+                sort_action='native',
+            )
+
+            table_total = dash_table.DataTable(
+                data=pd.DataFrame(data_total).to_dict('records'),
+                columns=[{'id': c, 'name': c} for c in pd.DataFrame(data_total).columns],
+                page_size=20,
+                sort_action='native',
+            )
+
+            return table, table_total
+
+        return super().get(request, *args, **kwargs)
+
+
     def get_context_data(
             self, *, object_list=..., **kwargs
     ):
         context = super().get_context_data(**kwargs)
-        context['daily'] = CaseModel.objects.filter(created_at__day=timezone.now().day).aggregate(Sum('total'))[
-            'total__sum']
-        context['month'] = CaseModel.objects.filter(created_at__month=timezone.now().month).aggregate(Sum('total'))[
-            'total__sum']
-        context['year'] = CaseModel.objects.filter(created_at__year=timezone.now().year).aggregate(Sum('total'))[
-            'total__sum']
         context['is_read'] = Contact.objects.filter(is_read=False).count()
         return context
 
@@ -333,29 +436,3 @@ def mark_as_read(request, pk):
         obj.save()
         messages.info(request, 'Okudundu olarak işaretlendi')
     return redirect('/')
-
-
-class OrderMonthlyListView(LoginRequiredMixin, generic.MonthArchiveView):
-    model = OrderModel
-    template_name = 'pages/dashboard.html'
-    context_object_name = 'monthly_list'
-    allow_future = True
-    date_field = 'order_date'
-    queryset = OrderModel.objects.all()
-
-    def get(self, request, *args, **kwargs):
-        if request.user.is_superuser:
-            return super().get(request, *args, **kwargs)
-        else:
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-
-    def get_context_data(
-        self, *, object_list = ..., **kwargs
-    ):
-        context = super().get_context_data(**kwargs)
-        context['year_int'] = self.get_year()
-        context['month_name'] = self.get_month()
-        return context
-
-
