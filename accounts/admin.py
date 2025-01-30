@@ -4,7 +4,6 @@ from .models import Customer, OrderModel
 from bayi.models import CaseModel
 
 
-
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ('user', 'user__email', 'telephone', 'total_loan', 'total_pay', 'is_loan', 'date')
@@ -16,10 +15,10 @@ class CustomerAdmin(admin.ModelAdmin):
 
 @admin.register(OrderModel)
 class OrderModelAdmin(admin.ModelAdmin):
-    list_display = ('order_number', 'customer', 'quantity', 'order_date', 'last_date', 'remain', 'cost')
+    list_display = ('order_number', 'customer', 'total', 'remain', 'order_date', 'last_date', 'cost')
     list_filter = ('customer', 'order_date')
     list_editable = ('cost',)
-    readonly_fields = ('order_number', 'customer', 'remain', 'product', 'quantity')
+    readonly_fields = ('order_number', 'customer', 'total', 'remain', 'product', 'quantity')
     search_fields = ('customer__user__username', 'customer__telephone', 'customer__user__email', 'customer__address')
     search_help_text = 'Müşteri, telefon, email göre arama yap...'
 
@@ -48,4 +47,3 @@ class OrderModelAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
-

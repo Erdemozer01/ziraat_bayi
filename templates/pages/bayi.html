@@ -1,9 +1,9 @@
 {% extends 'layout/base.html' %}
-{% load static settings django_bootstrap5 %}
+{% load static settings django_bootstrap5 product %}
 {% get_setting as obj %}
 
 {% block title %}
-    {% if obj %}{{ obj.name.title }}{% else %}Anasayfa{% endif %}
+    {% if obj %}{{ obj.name.title }}{% else %}{% if request.path == '/' %}Anasayfa{% else %}{{ request.get_full_path|breadcrumbs|title }}{% endif %}{% endif %}
 {% endblock %}
 
 {% block stylesheets %}
@@ -14,5 +14,4 @@
 
 {% block content %}
     {% include 'includes/bayi/cards.html' %}
-
 {% endblock %}

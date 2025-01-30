@@ -31,7 +31,7 @@ class OrderModel(models.Model):
 
     quantity = models.PositiveIntegerField(verbose_name='Aldığı ürün miktarı', default=0)
     cost = models.FloatField(verbose_name='Ödeme Girişi', default=0, null=True, blank=True)
-    total = models.FloatField(verbose_name='Kalan tutar', default=0)
+    total = models.FloatField(verbose_name='Toplam', default=0)
     remain = models.FloatField(verbose_name='Kalan tutar', default=0)
 
     order_date = models.DateTimeField(verbose_name='Sipariş Tarihi', auto_now_add=True)

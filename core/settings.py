@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bayi.apps.BayiConfig',
     'accounts.apps.AccountsConfig',
-    'django_plotly_dash.apps.DjangoPlotlyDashConfig',
+
+    'django_plotly_dash',
     'channels',
     'django_bootstrap5',
     'django_ckeditor_5',

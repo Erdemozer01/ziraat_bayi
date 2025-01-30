@@ -22,6 +22,7 @@ import pandas as pd
 
 import dash_bootstrap_components as dbc
 
+
 def AboutView(request):
     form = ContactForm(request.POST or None)
     try:
@@ -76,7 +77,6 @@ class DashboardView(generic.ListView):
     model = Customer
     template_name = 'pages/dashboard.html'
 
-
     def get(self, request, *args, **kwargs):
 
         app = DjangoDash('IncomeTable', external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -84,43 +84,58 @@ class DashboardView(generic.ListView):
         app.layout = dbc.Container(
             [
 
-                dbc.Label('Kazanç', className='mt-4'),
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            [
+                                dbc.Label('Kazanç', className='mt-3'),
 
-                dcc.Dropdown(
-                    options={
-                        'günlük': 'Günlük',
-                        'aylık': 'Aylık',
-                        'yıllık': 'Yıllık'
-                    },
-                    value="günlük",
-                    id="dates",
-                    clearable=False,
-                    className="dropdown mb-2",
+                                dcc.Dropdown(
+                                    options={
+                                        'günlük': 'Günlük',
+                                        'aylık': 'Aylık',
+                                        'yıllık': 'Yıllık'
+                                    },
+                                    value="günlük",
+                                    id="dates",
+                                    clearable=False,
+                                    className="dropdown mb-2",
+                                ),
+
+                                dbc.Label('Ay'),
+
+                                dcc.Dropdown(
+                                    id="months",
+                                    options=[i for i in range(1, 13)],
+                                    value=timezone.now().month,
+                                    clearable=False,
+                                    className="dropdown mb-2",
+                                ),
+
+                                dbc.Label('Yıl'),
+
+                                dcc.Dropdown(
+                                    id="years",
+                                    options=[years.order_date.year for years in OrderModel.objects.all()],
+                                    value=timezone.now().year,
+                                    clearable=False,
+                                    className="dropdown mb-4",
+                                ),
+
+                            ], md=4, sm=4, lg=4
+
+                        ),
+
+                        dbc.Col(
+                            [
+                                html.Div(id='table-content', style={'margin-top': '3rem'}),
+                                html.Div(id='table-total', style={'float': 'right'}),
+                            ], md=8, sm=8, lg=8
+                        ),
+                    ]
                 ),
 
-                dbc.Label('Ay'),
-
-                dcc.Dropdown(
-                    id="months",
-                    options=[i for i in range(1, 13)],
-                    value=timezone.now().month,
-                    clearable=False,
-                    className="dropdown mb-2",
-                ),
-
-                dbc.Label('Yıl'),
-
-                dcc.Dropdown(
-                    id="years",
-                    options=[years.order_date.year for years in OrderModel.objects.all()],
-                    value=timezone.now().year,
-                    clearable=False,
-                    className="dropdown mb-4",
-                ),
-
-                html.Div(id='table-content'),
-                html.Div(id='table-total', className="mt-4"),
-            ]
+            ],
         )
 
         @app.callback(
@@ -135,7 +150,8 @@ class DashboardView(generic.ListView):
             global obj
 
             if value == "günlük":
-                obj = CaseModel.objects.filter(created_at__day=timezone.now().day, created_at__month=month, created_at__year=year)
+                obj = CaseModel.objects.filter(created_at__day=timezone.now().day, created_at__month=month,
+                                               created_at__year=year)
 
             elif value == "aylık":
                 obj = CaseModel.objects.filter(created_at__month=month, created_at__year=year)
@@ -143,10 +159,9 @@ class DashboardView(generic.ListView):
             elif value == "yıllık":
                 obj = CaseModel.objects.filter(created_at__year=year)
 
-
             data = OrderedDict(
                 [
-                    ("Ödeme Tarihi", [str(i.created_at.date())  for i in obj.all()]),
+                    ("Ödeme Tarihi", [str(i.created_at.date()) for i in obj.all()]),
                     ("Müşteri", [str(i.order.customer.user) for i in obj.all()]),
                     ("Ürünler", [i.order.product.values('name').first().get('name') for i in obj.all()]),
                     ("Birim Fiyat", [i.order.product.values('price').first().get('price') for i in obj.all()]),
@@ -155,11 +170,10 @@ class DashboardView(generic.ListView):
                 ]
             )
 
-            data_total = OrderedDict(
-                [
-                    (f"{value} Toplam Kazanç".title(), [obj.aggregate(Sum('total'))['total__sum']]),
-                ]
-            )
+            total = obj.aggregate(Sum('total'))['total__sum']
+
+            total_income = f"{value} Toplam Kazanç: {total} TL".upper()
+
 
             df = pd.DataFrame(data)
 
@@ -170,17 +184,9 @@ class DashboardView(generic.ListView):
                 sort_action='native',
             )
 
-            table_total = dash_table.DataTable(
-                data=pd.DataFrame(data_total).to_dict('records'),
-                columns=[{'id': c, 'name': c} for c in pd.DataFrame(data_total).columns],
-                page_size=20,
-                sort_action='native',
-            )
-
-            return table, table_total
+            return table, html.P([total_income], className="float-right")
 
         return super().get(request, *args, **kwargs)
-
 
     def get_context_data(
             self, *, object_list=..., **kwargs
