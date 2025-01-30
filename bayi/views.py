@@ -19,7 +19,6 @@ from django_plotly_dash import DjangoDash
 from dash import html, dcc, Output, Input, dash_table
 from collections import OrderedDict
 import pandas as pd
-
 import dash_bootstrap_components as dbc
 
 
@@ -83,7 +82,6 @@ class DashboardView(generic.ListView):
 
         app.layout = dbc.Container(
             [
-
                 dbc.Row(
                     [
                         dbc.Col(
@@ -134,7 +132,6 @@ class DashboardView(generic.ListView):
                         ),
                     ]
                 ),
-
             ],
         )
 
@@ -173,7 +170,6 @@ class DashboardView(generic.ListView):
             total = obj.aggregate(Sum('total'))['total__sum']
 
             total_income = f"{value} Toplam Kazanç: {total} TL".upper()
-
 
             df = pd.DataFrame(data)
 
