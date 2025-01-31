@@ -18,18 +18,22 @@ class CustomerForm(forms.ModelForm):
     valid = forms.BooleanField(required=True, widget=forms.CheckboxInput(attrs={'type': 'checkbox'}),
                                label='Bilgilerimin doğruluğunu kontrol ettim ve satın alma işlemini onalıyorum.')
 
+    payment = forms.ChoiceField(label='Ödeme Yöntemi', choices={'Nakit': 'Nakit', 'Kredi Kartı': 'Kredi Kartı', 'Borç': 'Borç'}, required=True)
+
     class Meta:
         model = Customer
 
-        fields = ['address', 'telephone', 'last_date', 'valid']
+        fields = ['address', 'telephone', 'payment', 'last_date', 'valid']
 
         widgets = {
-            'address': forms.Textarea(attrs={'class': 'form-control'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': '3'}),
         }
 
 
 class CustomerInformationModelForm(forms.ModelForm):
+
     class Meta:
+
         model = Customer
 
         fields = ['telephone', 'address', ]

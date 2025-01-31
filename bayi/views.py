@@ -104,14 +104,21 @@ class DashboardView(generic.ListView):
 
                                 dcc.Dropdown(
                                     id="months",
-                                    options=[i for i in range(1, 13)],
+                                    options=[
+                                        {'label': 'Ocak', 'value': 1},
+                                        {'label': 'Şubat', 'value': 2},
+                                        {'label': 'Mart', 'value': 3},
+                                        {'label': 'Nisan', 'value': 4},
+                                        {'label': 'Mayıs', 'value': 5},
+                                        {'label': 'Haziran', 'value': 6},
+                                    ],
+
                                     value=timezone.now().month,
                                     clearable=False,
                                     className="dropdown mb-2",
                                 ),
 
                                 dbc.Label('Yıl'),
-
                                 dcc.Dropdown(
                                     id="years",
                                     options=[years.order_date.year for years in OrderModel.objects.all()],
@@ -120,15 +127,15 @@ class DashboardView(generic.ListView):
                                     className="dropdown mb-4",
                                 ),
 
-                            ], md=4, sm=4, lg=4
+                            ],
 
                         ),
 
                         dbc.Col(
                             [
-                                html.Div(id='table-content', style={'margin-top': '3rem'}),
-                                html.Div(id='table-total', style={'float': 'right'}),
-                            ], md=8, sm=8, lg=8, align='right'
+                                html.Div(id='table-content', style={'margin-top': '3rem'}, className='mx-auto'),
+                                html.Div(id='table-total'),
+                            ],
                         ),
                     ]
                 ),
@@ -160,8 +167,8 @@ class DashboardView(generic.ListView):
                 [
                     ("Ödeme Tarihi", [str(i.created_at.date()) for i in obj.all()]),
                     ("Müşteri", [str(i.order.customer.user) for i in obj.all()]),
-                    ("Ürünler", [i.order.product.values('name').first().get('name') for i in obj.all()]),
-                    ("Birim Fiyat", [i.order.product.values('price').first().get('price') for i in obj.all()]),
+                    ("Ürünler", [i.order.product.name for i in obj.all()]),
+                    ("Birim Fiyat", [i.order.product.price for i in obj.all()]),
                     ("Adet", [str(i.order.quantity) for i in obj.all()]),
                     ("Toplam", [str(i.total) + " " + "TL" for i in obj.all()]),
                 ]
@@ -169,24 +176,26 @@ class DashboardView(generic.ListView):
 
             total = obj.aggregate(Sum('total'))['total__sum']
 
-            total_income = f"{value} Toplam Kazanç: {total} TL".upper()
+            if total:
+                total_income = f"{value} Toplam Kazanç: {total} TL".upper()
+            else:
+                total_income = f"{value} Toplam Kazanç: 0 TL".upper()
 
             df = pd.DataFrame(data)
 
             table = dash_table.DataTable(
                 data=df.to_dict('records'),
                 columns=[{'id': c, 'name': c} for c in df.columns],
-                page_size=20,
+                page_size=7,
                 sort_action='native',
+
             )
 
             return table, total_income
 
         return super().get(request, *args, **kwargs)
 
-    def get_context_data(
-            self, *, object_list=..., **kwargs
-    ):
+    def get_context_data(self, *, object_list=..., **kwargs):
         context = super().get_context_data(**kwargs)
         context['is_read'] = Contact.objects.filter(is_read=False).count()
         return context
@@ -328,7 +337,7 @@ def checkout(request, user, cart_number):
             customer = Customer.objects.create(user=request.user)
 
         quantity = cart_items.aggregate(models.Sum('quantity'))['quantity__sum']
-        total = cart_items.aggregate(models.Sum('sub_total'))['sub_total__sum']
+        cart_total = cart_items.aggregate(models.Sum('sub_total'))['sub_total__sum']
 
         form = UserForm(request.POST or None, instance=request.user)
         form2 = CustomerForm(request.POST or None, instance=customer)
@@ -336,19 +345,34 @@ def checkout(request, user, cart_number):
         if request.method == 'POST':
 
             if form.is_valid() and form2.is_valid():
+
                 form.save()
                 form2.save(commit=False)
 
                 last_date = form2.cleaned_data['last_date']
+                payment = form2.cleaned_data['payment']
 
-                order = OrderModel.objects.create(customer=customer, order_number=cart_number, quantity=quantity,
-                                                  remain=total, last_date=last_date, total=total)
+                order = OrderModel()
 
                 for item in cart_items:
-                    order.product.add(item.product)
+                    order.product = item.product
+                    order.customer = customer
+                    order.order_number = cart_number
+                    order.quantity = item.quantity
+                    order.total = cart_total
+
+                    if payment == 'Borç':
+                        order.remain = cart_total
+                        order.last_date = last_date
+                        order.customer.total_loan += cart_total
+
+                    order.payment = payment
+                    order.save()
+
                     item.product.stock -= item.quantity
                     item.product.ordered += item.quantity
                     item.product.save()
+
                     if item.product.stock == 0:
                         item.product.is_stock = False
                     item.product.save()
@@ -363,16 +387,42 @@ def checkout(request, user, cart_number):
 
                 customer.bought += quantity
 
-                customer.total_loan = OrderModel.objects.aggregate(models.Sum('remain'))['remain__sum']
+                if payment == 'Borç':
+                    customer.total_loan = OrderModel.objects.aggregate(models.Sum('remain'))['remain__sum']
+                    customer.save()
+                else:
+                    customer.total_loan = 0
+                    customer.save()
+                    CaseModel.objects.create(order=order, total=cart_total)
 
-                customer.save()
+
+
+                context = {
+                    'order_number': order.order_number,
+                    'ad': order.customer.user.first_name + ' ' + order.customer.user.last_name,
+                    'payment': order.payment,
+                    'total': order.total,
+                    'remain': order.remain,
+                    'order_date': order.order_date,
+                    'email': order.customer.user.email,
+                    'address': order.customer.address,
+                    'cart_items': cart_items,
+                }
+
+                email_sender(
+                    subject="Fatura",
+                    sender=settings.EMAIL_HOST_USER,
+                    recipients=customer.user.email,
+                    template="invoice",
+                    context=context,
+                )
 
                 messages.success(request, 'Satın alma başarılı')
 
                 return redirect('/')
 
         context = {'form': form, 'cart_items': cart_items, 'cart': cart, 'quantity': quantity, 'form2': form2,
-                   'customer': customer}
+                   'customer': customer, 'cart_total': cart_total}
 
         return render(request, 'pages/checkout.html', context=context)
 
@@ -391,9 +441,8 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        remain = OrderModel.objects.filter(customer__user=self.request.user).aggregate(models.Sum('remain'))[
+        context['remain'] = OrderModel.objects.filter(customer__user=self.request.user).aggregate(models.Sum('remain'))[
             'remain__sum']
-        context['cost'] = remain
         return context
 
 

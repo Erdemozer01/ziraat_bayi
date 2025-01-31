@@ -5,15 +5,15 @@
 {% block title %}Checkout{% endblock %}
 
 {% block content %}
-    <div class="container" style="max-width: 960px; margin-bottom: 5%">
-        <main>
+    <div class="container" style="max-width: 960px; margin-bottom: 5%; margin-top: 1%;">
 
+        <main>
             <div class="py-5 text-center">
                 <a href="/">
                     <img class="d-block mx-auto mb-4" src="{% static 'assets/img/favicons/favicon.png' %}" alt=""
                          width="72" height="72">
                 </a>
-                <h2>Sipariş / Ödeme Sayfası</h2>
+                <h2>Ödeme Sayfası</h2>
             </div>
 
             {% include 'widgets/messages.html' %}
@@ -39,15 +39,15 @@
                         {% endfor %}
 
                         <li class="list-group-item d-flex justify-content-between">
-                            <span>Toplam Tutar TL</span>
-                            <strong>{{ cart.total }}</strong>
+                            <span>Toplam TL</span>
+                            <strong>{{ cart_total }} TL </strong>
                         </li>
                     </ul>
 
                     <form class="card p-2">
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Promosyon Kodu">
-                            <button type="submit" class="btn btn-secondary">İndirim</button>
+                            <button type="submit" class="btn btn-secondary">Uygula</button>
                         </div>
                     </form>
                 </div>

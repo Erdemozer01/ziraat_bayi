@@ -10,7 +10,9 @@
 
 
 {% block content %}
+
     {% if user.is_authenticated %}
+
         <div class="container-fluid">
             <div class="row">
                 {% include 'includes/dashboard/sidebar.html' %}
@@ -45,15 +47,16 @@
 
                         {% if 'sepetim' in request.path %}
                             <h2>Sepetim</h2>
-                            {% if cart_items %}
-                                <div class="table-responsive small">
+                            <div class="table-responsive small" style="margin-bottom: 25rem;">
+                                {% if cart_items %}
+
                                     <table class="table table-striped table-sm">
                                         <thead>
                                         <tr>
                                             <th scope="col">Ürün</th>
                                             <th scope="col">Miktar</th>
-                                            <th scope="col">Birim Fiyat (TL)</th>
-                                            <th scope="col">Ara Toplam (TL)</th>
+                                            <th scope="col">Birim Fiyat</th>
+                                            <th scope="col">Toplam</th>
                                             <th scope="col">İşlem Tarihi</th>
                                         </tr>
                                         </thead>
@@ -62,8 +65,8 @@
                                             <tr>
                                                 <td>{{ cartitem.product }}</td>
                                                 <td>{{ cartitem.quantity }}</td>
-                                                <td>{{ cartitem.product.price }}</td>
-                                                <td>{{ cartitem.sub_total }}</td>
+                                                <td>{{ cartitem.product.price }} TL</td>
+                                                <td>{{ cartitem.sub_total }} TL</td>
                                                 <td>{{ cart.created }}</td>
                                                 <td>
                                                     <a type="button" data-bs-toggle="modal"
@@ -76,21 +79,24 @@
                                             </tr>
                                         {% endfor %}
                                         </tbody>
+
                                     </table>
-                                </div>
-                                <a href="{% url 'bayi:checkout' user cart.cart_number %}">
-                                    <button type="button" class="btn btn-outline-secondary float-end">Ödeme Sayfası
-                                    </button>
-                                </a>
-                            {% else %}
-                                <p>Sepetinizde ürün bulunamadı</p>
-                            {% endif %}
+                                    <a href="{% url 'bayi:checkout' user cart.cart_number %}">
+                                        <button type="button" class="btn btn-outline-secondary float-end">Ödeme
+                                            Sayfası
+                                        </button>
+                                    </a>
+
+                                {% else %}
+                                    <p>Sepetinizde ürün bulunamadı</p>
+                                {% endif %}
+                            </div>
                         {% endif %}
 
                         {% if 'siparişlerim' in request.path %}
                             <h2>Satın Aldıklarım</h2>
                             {% if order_list %}
-                                <div class="table-responsive small">
+                                <div class="table-responsive small" style="margin-bottom: 25rem;">
 
                                     <table class="table table-striped table-sm">
                                         <thead>
@@ -99,6 +105,7 @@
                                             <th scope="col">Adet</th>
                                             <th scope="col">Brim Fiyat</th>
                                             <th scope="col">Tutar</th>
+                                            <th scope="col">Borc</th>
                                             <th scope="col">Satın alma Tarihi</th>
                                             <th scope="col">Son Ödeme Tarihi</th>
                                         </tr>
@@ -107,22 +114,26 @@
 
                                         {% for order in order_list %}
                                             <tr>
-                                                <td>{% for product in order.product.all %}{{ product.name }}
-                                                    , {% endfor %}</td>
+                                                <td>{{ order.product }}</td>
                                                 <td>{{ order.quantity }}</td>
-                                                <td>{% for product in order.product.all %}
-                                                    {{ product.price }} {% endfor %}
-                                                    TL
-                                                </td>
+                                                <td>{{ order.product.price }} TL</td>
+                                                {% if order.remain %}
+                                                    <td>{{ order.remain }} TL</td>
+                                                {% else %}
+                                                    <td>{{ order.total }} TL</td>
+                                                {% endif %}
                                                 <td>{{ order.remain }} TL</td>
                                                 <td>{{ order.order_date }}</td>
                                                 <td>{{ order.last_date }}</td>
                                             </tr>
                                         {% endfor %}
+
                                         <tr>
-                                            <td>Borc</td>
+                                            <td>Toplam</td>
                                             <td></td>
-                                            <td>{{ cost }} TL</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{{ remain }} TL</td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -142,7 +153,6 @@
                                 </div>
                             </form>
                         {% endif %}
-
                     </main>
                 {% endif %}
             </div>
