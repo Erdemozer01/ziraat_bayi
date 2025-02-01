@@ -61,16 +61,17 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {% for cartitem in cart_items %}
+
+                                        {% for item in cart_items %}
                                             <tr>
-                                                <td>{{ cartitem.product }}</td>
-                                                <td>{{ cartitem.quantity }}</td>
-                                                <td>{{ cartitem.product.price }} TL</td>
-                                                <td>{{ cartitem.sub_total }} TL</td>
+                                                <td>{{ item.product }}</td>
+                                                <td>{{ item.quantity }}</td>
+                                                <td>{{ item.product.price }} TL</td>
+                                                <td>{{ item.sub_total }} TL</td>
                                                 <td>{{ cart.created }}</td>
                                                 <td>
                                                     <a type="button" data-bs-toggle="modal"
-                                                       data-bs-target="#editCarModal">
+                                                       data-bs-target="#editCarModal{{ item.pk }}">
                                                         <img src="{% static 'admin/img/icon-deletelink.svg' %}" alt="">
                                                     </a>
                                                 </td>
@@ -101,11 +102,12 @@
                                     <table class="table table-striped table-sm">
                                         <thead>
                                         <tr>
-                                            <th scope="col">Aldığım ürünler</th>
+                                            <th scope="col">Sipariş Numarası</th>
+                                            <th scope="col">Ürün</th>
                                             <th scope="col">Adet</th>
                                             <th scope="col">Brim Fiyat</th>
                                             <th scope="col">Tutar</th>
-                                            <th scope="col">Borc</th>
+                                            <th scope="col">Borç</th>
                                             <th scope="col">Satın alma Tarihi</th>
                                             <th scope="col">Son Ödeme Tarihi</th>
                                         </tr>
@@ -114,25 +116,29 @@
 
                                         {% for order in order_list %}
                                             <tr>
+                                                <td>{{ order.order_number }}</td>
                                                 <td>{{ order.product }}</td>
                                                 <td>{{ order.quantity }}</td>
                                                 <td>{{ order.product.price }} TL</td>
-                                                {% if order.remain %}
-                                                    <td>{{ order.remain }} TL</td>
-                                                {% else %}
-                                                    <td>{{ order.total }} TL</td>
-                                                {% endif %}
+
+                                                <td>{{ order.total }} TL</td>
+
                                                 <td>{{ order.remain }} TL</td>
                                                 <td>{{ order.order_date }}</td>
-                                                <td>{{ order.last_date }}</td>
+                                                {% if order.last_date %}
+                                                    <td>{{ order.last_date }}</td>
+                                                {% else %}
+                                                    <td>----</td>
+                                                {% endif %}
+
                                             </tr>
                                         {% endfor %}
 
                                         <tr>
                                             <td>Toplam</td>
                                             <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>{{ total_product }}</td>
+                                            <td>{{ total }} TL</td>
                                             <td>{{ remain }} TL</td>
                                         </tr>
                                         </tbody>

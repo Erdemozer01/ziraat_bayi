@@ -16,6 +16,6 @@ urlpatterns = [
     path('siparis-özeti/<user>/<cart_number>/', views.checkout, name='checkout'),
     path('dashboard/siparişlerim/<user>/', views.OrderListView.as_view(), name='shoppinglist'),
     path('delete-cart/<cart_number>/', views.delete_cart, name='delete_cart'),
-    path('remove-cart-item/<pk>/', views.remove_cart_item, name='remove_cart_item'),
+    path('remove-cart-item/<pk>/<cart_number>/', views.remove_cart_item, name='remove_cart_item'),
     path('mark_as_read/<pk>/', views.mark_as_read, name='mark_as_read'),
 ]

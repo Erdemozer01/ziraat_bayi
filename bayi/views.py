@@ -350,63 +350,77 @@ def checkout(request, user, cart_number):
                 form2.save(commit=False)
 
                 last_date = form2.cleaned_data['last_date']
+
                 payment = form2.cleaned_data['payment']
 
-                order = OrderModel()
-
                 for item in cart_items:
-                    order.product = item.product
-                    order.customer = customer
-                    order.order_number = cart_number
-                    order.quantity = item.quantity
-                    order.total = cart_total
 
                     if payment == 'Borç':
-                        order.remain = cart_total
-                        order.last_date = last_date
-                        order.customer.total_loan += cart_total
 
-                    order.payment = payment
-                    order.save()
+                        order = OrderModel.objects.create(
+                            customer=customer,
+                            product=item.product,
+                            order_number=uuid.uuid4(),
+                            payment=payment,
+                            quantity=item.quantity,
+                            remain=item.product.price * item.quantity,
+                            last_date=last_date,
+                        )
 
-                    item.product.stock -= item.quantity
-                    item.product.ordered += item.quantity
-                    item.product.save()
+                        order.customer.total_loan += item.product.price * item.quantity
+                        order.customer.is_loan = True
+                        order.customer.bought += item.quantity
+                        order.customer.save()
+                        order.product.ordered += item.quantity
+                        order.product.stock -= item.quantity
+                        order.product.save()
 
-                    if item.product.stock == 0:
-                        item.product.is_stock = False
-                    item.product.save()
+                        if order.product.stock <= 0:
+                            order.product.is_stock = False
+                            order.product.save()
 
-                order.save()
+                    else:
 
-                cart.delete()
+                        order = OrderModel.objects.create(
+                            customer=customer,
+                            product=item.product,
+                            order_number=uuid.uuid4(),
+                            payment=payment,
+                            quantity=item.quantity,
+                            total=item.product.price * item.quantity,
+                        )
 
-                form2.save()
+                        customer.total_pay += item.product.price * item.quantity
+                        customer.is_loan = False
+                        customer.bought += item.quantity
+                        customer.save()
+                        item.product.ordered += item.quantity
+                        item.product.stock -= item.quantity
+                        item.product.save()
 
-                customer.is_loan = True
+                        if item.product.stock <= 0:
+                            item.product.is_stock = False
+                            item.product.save()
 
-                customer.bought += quantity
+                        CaseModel.objects.create(
+                            order=order,
+                            total=item.product.price * item.quantity,
+                        )
 
-                if payment == 'Borç':
-                    customer.total_loan = OrderModel.objects.aggregate(models.Sum('remain'))['remain__sum']
-                    customer.save()
-                else:
-                    customer.total_loan = 0
-                    customer.save()
-                    CaseModel.objects.create(order=order, total=cart_total)
-
-
+                total_remain = Customer.objects.aggregate(models.Sum('total_loan'))['total_loan__sum']
 
                 context = {
                     'order_number': order.order_number,
                     'ad': order.customer.user.first_name + ' ' + order.customer.user.last_name,
                     'payment': order.payment,
                     'total': order.total,
+                    'total_remain': total_remain,
                     'remain': order.remain,
                     'order_date': order.order_date,
                     'email': order.customer.user.email,
                     'address': order.customer.address,
                     'cart_items': cart_items,
+                    'last_date': order.last_date,
                 }
 
                 email_sender(
@@ -418,6 +432,8 @@ def checkout(request, user, cart_number):
                 )
 
                 messages.success(request, 'Satın alma başarılı')
+
+                cart.delete()
 
                 return redirect('/')
 
@@ -443,6 +459,8 @@ class OrderListView(LoginRequiredMixin, generic.ListView):
         context = super().get_context_data(**kwargs)
         context['remain'] = OrderModel.objects.filter(customer__user=self.request.user).aggregate(models.Sum('remain'))[
             'remain__sum']
+        context['total'] = OrderModel.objects.filter(customer__user=self.request.user).aggregate(models.Sum('total'))['total__sum']
+        context['total_product'] = OrderModel.objects.filter(customer__user=self.request.user).aggregate(Sum('quantity'))['quantity__sum']
         return context
 
 
@@ -453,11 +471,10 @@ def delete_cart(request, cart_number):
     return redirect('/')
 
 
-def remove_cart_item(request, pk):
-    cart_item = CartItem.objects.get(pk=pk)
+def remove_cart_item(request, pk, cart_number):
+    cart_item = CartItem.objects.get(pk=pk, cart__cart_number=cart_number)
     cart_item.delete()
-    if cart_item.product is not None:
-        cart_item.cart.delete()
+    messages.success(request, f'{cart_item.product.name} Sepetinizden kaldırıldı.')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
@@ -473,10 +490,11 @@ def MyInformationDashBoardView(request, pk, user):
             if form.is_valid() or form2.is_valid():
                 form.save(), form2.save()
                 messages.success(request, 'Bilgileriniz Güncellendi')
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            return redirect('/')
     else:
         messages.info(request, 'Yetkisiz işlem')
-        return redirect('/')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
     return render(request, 'pages/dashboard.html', {'form': form, 'form2': form2})
 
 

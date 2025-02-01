@@ -241,18 +241,36 @@
                                             </td>
                                         </tr>
                                     </table>
-                                    <table class="paragraph_block block-2" width="100%" border="0" cellpadding="0"
-                                           cellspacing="0" role="presentation"
-                                           style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-                                        <tr>
-                                            <td class="pad">
-                                                <div style="color:#ffffff;direction:ltr;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:18px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:21.599999999999998px;">
-                                                    <p style="margin: 0;">#{{ order_number }}<br>Tarih: {{ order_date }}
-                                                    </p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </table>
+                                    {% if total == 0 %}
+                                        <table class="paragraph_block block-2" width="100%" border="0" cellpadding="0"
+                                               cellspacing="0" role="presentation"
+                                               style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                            <tr>
+                                                <td class="pad">
+                                                    <div style="color:#ffffff;direction:ltr;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:18px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:21.599999999999998px;">
+                                                        <p style="margin: 0;">
+                                                            #{{ order_number }}<br>Son Ödeme: {{ last_date }}
+                                                        </p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    {% else %}
+                                        <table class="paragraph_block block-2" width="100%" border="0" cellpadding="0"
+                                               cellspacing="0" role="presentation"
+                                               style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                            <tr>
+                                                <td class="pad">
+                                                    <div style="color:#ffffff;direction:ltr;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:18px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:21.599999999999998px;">
+                                                        <p style="margin: 0;">
+                                                            #{{ order_number }}<br>Tarih: {{ order_date }}
+                                                        </p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    {% endif %}
+
                                     <div class="spacer_block block-3"
                                          style="height:30px;line-height:30px;font-size:1px;">&#8202;
                                     </div>
@@ -282,60 +300,121 @@
                 </tr>
                 </tbody>
             </table>
-            <table class="row row-3" align="center" width="100%" border="0" cellpadding="0" cellspacing="0"
-                   role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-size: auto;">
-                <tbody>
-                <tr>
-                    <td>
-                        <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0"
-                               role="presentation"
-                               style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 0; color: #000000; background-size: auto; background-color: #f6f5f1; border-left: 30px solid transparent; border-right: 30px solid transparent; border-top: 30px solid transparent; width: 650px; margin: 0 auto;"
-                               width="650">
-                            <tbody>
-                            <tr>
-                                <td class="column column-1" width="100%"
-                                    style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; background-color: #ffffff; padding-bottom: 30px; padding-top: 30px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
-                                    <table class="heading_block block-1" width="100%" border="0" cellpadding="0"
-                                           cellspacing="0" role="presentation"
-                                           style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                                        <tr>
-                                            <td class="pad" style="text-align:center;width:100%;">
-                                                <h1 style="margin: 0; color: #222222; direction: ltr; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 400; letter-spacing: -1px; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 28.799999999999997px;">
-                                                    <span class="tinyMce-placeholder" style="word-break: break-word;">Toplam:</span>
-                                                </h1>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <table class="paragraph_block block-2" width="100%" border="0" cellpadding="0"
-                                           cellspacing="0" role="presentation"
-                                           style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-                                        <tr>
-                                            <td class="pad">
-                                                <div style="color:#222222;direction:ltr;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:40px;font-weight:700;letter-spacing:0px;line-height:120%;text-align:center;mso-line-height-alt:48px;">
-                                                    <p style="margin: 0;"><strong>{{ total }} TL</strong></p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <table class="paragraph_block block-3" width="100%" border="0" cellpadding="0"
-                                           cellspacing="0" role="presentation"
-                                           style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
-                                        <tr>
-                                            <td class="pad" style="padding-top:5px;">
-                                                <div style="color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:14px;font-weight:400;line-height:150%;text-align:center;mso-line-height-alt:21px;">
-                                                    <p style="margin: 0; word-break: break-word;">{{ order_date }}</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+
+            {% if total == 0 %}
+                <table class="row row-3" align="center" width="100%" border="0" cellpadding="0" cellspacing="0"
+                       role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-size: auto;">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0"
+                                   role="presentation"
+                                   style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 0; color: #000000; background-size: auto; background-color: #f6f5f1; border-left: 30px solid transparent; border-right: 30px solid transparent; border-top: 30px solid transparent; width: 650px; margin: 0 auto;"
+                                   width="650">
+                                <tbody>
+                                <tr>
+                                    <td class="column column-1" width="100%"
+                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; background-color: #ffffff; padding-bottom: 30px; padding-top: 30px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
+                                        <table class="heading_block block-1" width="100%" border="0" cellpadding="0"
+                                               cellspacing="0" role="presentation"
+                                               style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                            <tr>
+                                                <td class="pad" style="text-align:center;width:100%;">
+                                                    <h1 style="margin: 0; color: #222222; direction: ltr; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 400; letter-spacing: -1px; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 28.799999999999997px;">
+                                                        <span class="tinyMce-placeholder"
+                                                              style="word-break: break-word;">Toplam Borç:</span>
+                                                    </h1>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <table class="paragraph_block block-2" width="100%" border="0" cellpadding="0"
+                                               cellspacing="0" role="presentation"
+                                               style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                            <tr>
+                                                <td class="pad">
+                                                    <div style="color:#222222;direction:ltr;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:40px;font-weight:700;letter-spacing:0px;line-height:120%;text-align:center;mso-line-height-alt:48px;">
+                                                        <p style="margin: 0;"><strong>{{ total_remain }} TL</strong></p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <table class="paragraph_block block-3" width="100%" border="0" cellpadding="0"
+                                               cellspacing="0" role="presentation"
+                                               style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                            <tr>
+                                                <td class="pad" style="padding-top:5px;">
+                                                    <div style="color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:14px;font-weight:400;line-height:150%;text-align:center;mso-line-height-alt:21px;">
+                                                        <p style="margin: 0; word-break: break-word;">{{ order_date }}</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            {% else %}
+                <table class="row row-3" align="center" width="100%" border="0" cellpadding="0" cellspacing="0"
+                       role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-size: auto;">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <table class="row-content stack" align="center" border="0" cellpadding="0" cellspacing="0"
+                                   role="presentation"
+                                   style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 0; color: #000000; background-size: auto; background-color: #f6f5f1; border-left: 30px solid transparent; border-right: 30px solid transparent; border-top: 30px solid transparent; width: 650px; margin: 0 auto;"
+                                   width="650">
+                                <tbody>
+                                <tr>
+                                    <td class="column column-1" width="100%"
+                                        style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; background-color: #ffffff; padding-bottom: 30px; padding-top: 30px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;">
+                                        <table class="heading_block block-1" width="100%" border="0" cellpadding="0"
+                                               cellspacing="0" role="presentation"
+                                               style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                            <tr>
+                                                <td class="pad" style="text-align:center;width:100%;">
+                                                    <h1 style="margin: 0; color: #222222; direction: ltr; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 400; letter-spacing: -1px; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 28.799999999999997px;">
+                                                        <span class="tinyMce-placeholder"
+                                                              style="word-break: break-word;">Toplam:</span>
+                                                    </h1>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <table class="paragraph_block block-2" width="100%" border="0" cellpadding="0"
+                                               cellspacing="0" role="presentation"
+                                               style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                            <tr>
+                                                <td class="pad">
+                                                    <div style="color:#222222;direction:ltr;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:40px;font-weight:700;letter-spacing:0px;line-height:120%;text-align:center;mso-line-height-alt:48px;">
+                                                        <p style="margin: 0;"><strong>{{ total }} TL</strong></p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <table class="paragraph_block block-3" width="100%" border="0" cellpadding="0"
+                                               cellspacing="0" role="presentation"
+                                               style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+                                            <tr>
+                                                <td class="pad" style="padding-top:5px;">
+                                                    <div style="color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:14px;font-weight:400;line-height:150%;text-align:center;mso-line-height-alt:21px;">
+                                                        <p style="margin: 0; word-break: break-word;">{{ order_date }}</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            {% endif %}
+
             <table class="row row-4" align="center" width="100%" border="0" cellpadding="0" cellspacing="0"
                    role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-size: auto;">
                 <tbody>
@@ -368,7 +447,8 @@
                                             <td class="pad" style="padding-top:10px;">
                                                 <div style="color:#222222;direction:ltr;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:16px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
                                                     <p style="margin: 0;">Satın aldığınız ürün yada içerikler aşağıdaki
-                                                        gibidir. Ayrıca fatura gönderilmeyecektir.</p>
+                                                        gibidir.</p>
+                                                    <p style="margin: 0;">Ayrıca fatura gönderilmeyecektir.</p>
                                                 </div>
                                             </td>
                                         </tr>
@@ -451,12 +531,25 @@
                                                             style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;">
                                                             &#8203;
                                                         </td>
-                                                        <td width="25%"
-                                                            style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;">
-                                                            <strong>Toplam</strong></td>
-                                                        <td width="25%"
-                                                            style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;">
-                                                            <strong>{{ total }} TL</strong></td>
+                                                        {% if total == 0 %}
+                                                            <td width="25%"
+                                                                style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;">
+                                                                <strong>Toplam Borç</strong></td>
+                                                            <td width="25%"
+                                                                style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;">
+                                                                <strong>{{ remain }} TL</strong>
+                                                            </td>
+                                                        {% else %}
+                                                            <td width="25%"
+                                                                style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;">
+                                                                <strong>Toplam</strong></td>
+                                                            <td width="25%"
+                                                                style="padding: 10px; word-break: break-word; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; border-left: 1px solid transparent;">
+                                                                <strong>{{ total }} TL</strong>
+                                                            </td>
+                                                        {% endif %}
+
+
                                                     </tr>
                                                     </tbody>
                                                 </table>

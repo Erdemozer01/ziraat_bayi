@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.contrib import messages
+from django.http import HttpResponseRedirect
+
 from .models import Product, ProductCategory, Header, SettingsSite, SubscriptModel, Cart, CartItem, CaseModel, Contact
 
 
@@ -83,9 +85,19 @@ class CartAdmin(admin.ModelAdmin):
         return False
 
 
+@admin.display(description="Sipariş Numarası")
+def order_number(obj):
+    return f"{obj.order.order_number}".upper()
+
+
+@admin.display(description="Müşteri")
+def customer(obj):
+    return f"{obj.order.customer.user}".upper()
+
+
 @admin.register(CaseModel)
 class CaseModelAdmin(admin.ModelAdmin):
-    list_display = ('order', 'total', 'created_at',)
+    list_display = (order_number, customer, 'total', 'created_at',)
     list_filter = ('created_at',)
     search_fields = ('order__order_number', 'order__cost', 'order__customer__user__username')
     search_help_text = 'Sipariş Numarası, ödeme tutarı, kullanıcı adı göre ara...'
@@ -97,6 +109,7 @@ class CaseModelAdmin(admin.ModelAdmin):
     def delete_queryset(self, request, queryset):
         if len(queryset) > 1:
             messages.error(request, 'Sadece bir işlemi silebilirsiniz')
+            return HttpResponseRedirect(request.get_full_path())
 
 
         elif len(queryset) == 1:

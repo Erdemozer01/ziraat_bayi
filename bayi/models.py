@@ -79,7 +79,6 @@ class Product(models.Model):
         return super().save(*args, **kwargs)
 
 
-
 class Cart(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='cart', verbose_name='Müşteri')
     cart_number = models.CharField(max_length=100, verbose_name='Sepet ID')
@@ -116,7 +115,7 @@ class CaseModel(models.Model):
     created_at = models.DateTimeField(verbose_name='Ödeme Tarihi', auto_now_add=True)
 
     def __str__(self):
-        return str(self.order) + ', ' + str(self.total) + ' ' + 'TL'
+        return str(self.order.order_number) + ', ' + str(self.total) + ' ' + 'TL'
 
     class Meta:
         ordering = ('-created_at',)
@@ -150,6 +149,9 @@ class Contact(models.Model):
 
 class SubscriptModel(models.Model):
     email = models.EmailField(verbose_name='Email adresini giriniz')
+
+    def __str__(self):
+        return self.email
 
     class Meta:
         verbose_name = "Abone"

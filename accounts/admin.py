@@ -1,11 +1,14 @@
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.admin.options import get_ul_class, widgets
+from django.db.models import Sum
 from django.http import HttpResponseRedirect
 
 from .models import Customer, OrderModel
 from bayi.models import CaseModel
 from django.contrib import messages
 from bayi.email import email_sender
+from django import forms
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
@@ -13,7 +16,7 @@ class CustomerAdmin(admin.ModelAdmin):
     list_filter = ('is_loan', 'date')
     search_fields = ('user__username', 'telephone')
     search_help_text = 'Müşteri adı veya telefon numarasına göre arama yap'
-    readonly_fields = ('user', 'telephone', 'address', 'total_loan', 'bought', 'is_loan', 'total_pay')
+    readonly_fields = ('user', 'telephone', 'address', )
 
 
 @admin.register(OrderModel)
@@ -22,38 +25,50 @@ class OrderModelAdmin(admin.ModelAdmin):
     list_filter = ('customer', 'payment', 'order_date')
     list_editable = ('cost',)
     readonly_fields = ('order_number', 'customer', 'payment', 'total', 'remain', 'product', 'quantity')
-    search_fields = ('customer__user__username', 'customer__telephone', 'customer__user__email', 'customer__address')
-    search_help_text = 'Müşteri, telefon, email göre arama yap...'
+    search_fields = ('order_number', 'customer__telephone')
+    search_help_text = 'Sipariş Numarası veya telefon numarasına göre arama yap'
     actions = ['loan_reminder']
 
-    @admin.action(description='Borcunu Hatırlat')
+
+    @admin.action(description='Borcu Email yoluyla hatırlat')
     def loan_reminder(self, request, queryset):
-        total_remain = 0
+
+        if len(queryset) > 1:
+            messages.error(request, 'Tekli seçim yapın')
+            return HttpResponseRedirect(request.get_full_path())
+
+        total_remain = queryset.aggregate(Sum('remain'))['remain__sum']
+
         for order in queryset:
 
-            total_remain += order.remain
+            if order.remain > 0 and order.last_date is not None:
 
-            context = {
-                'order_number': order.order_number,
-                'ad': order.customer.user.first_name + ' ' + order.customer.user.last_name,
-                'payment': order.payment,
-                'total': total_remain,
-                'remain': order.remain,
-                'order_date': order.order_date,
-                'email': order.customer.user.email,
-                'address': order.customer.address,
-                'phone': order.customer.telephone,
-                'order_list': queryset,
-                'last_date': order.last_date,
-                'site': request.META.get('HTTP_ORIGIN')
-            }
-            email_sender(
-                subject="Borç Hatırlatma",
-                sender=settings.EMAIL_HOST_USER,
-                recipients=order.customer.user.email,
-                template="loan",
-                context=context,
-            )
+                context = {
+                    'order_number': order.order_number,
+                    'ad': order.customer.user.first_name + ' ' + order.customer.user.last_name,
+                    'payment': order.payment,
+                    'total': total_remain,
+                    'remain': order.remain,
+                    'order_date': order.order_date,
+                    'email': order.customer.user.email,
+                    'address': order.customer.address,
+                    'phone': order.customer.telephone,
+                    'order_list': queryset,
+                    'last_date': order.last_date,
+                    'site': request.META.get('HTTP_ORIGIN')
+                }
+
+                email_sender(
+                    subject="Borç Hatırlatma",
+                    sender=settings.EMAIL_HOST_USER,
+                    recipients=order.customer.user.email,
+                    template="loan",
+                    context=context,
+                )
+
+            else:
+                messages.error(request, f'{order.product.name, order.order_number} borcu bulunamadı')
+                return HttpResponseRedirect(request.get_full_path())
 
             messages.success(request, 'Borç hatırlatma başarılı.')
 
@@ -69,6 +84,7 @@ class OrderModelAdmin(admin.ModelAdmin):
 
                     obj.remain -= obj.cost
                     obj.customer.total_loan -= obj.cost
+                    obj.customer.total_pay += obj.cost
                     CaseModel.objects.create(order=obj, total=obj.cost)
 
                     obj.save()
@@ -78,7 +94,7 @@ class OrderModelAdmin(admin.ModelAdmin):
                         obj.customer.is_loan = False
 
                     obj.customer.save()
-                    obj.cost = 0
+                    obj.cost = None
                     obj.save()
 
                 else:
@@ -86,7 +102,8 @@ class OrderModelAdmin(admin.ModelAdmin):
                     pass
             else:
                 messages.error(request, 'Borç bulunmamaktadır')
-                pass
+                obj.cost = None
+                obj.save()
         else:
             CaseModel.objects.create(order=obj, total=obj.cost)
             return super().save_model(request, obj, form, change)
@@ -96,3 +113,36 @@ class OrderModelAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+    def delete_queryset(self, request, queryset):
+
+        for order in queryset:
+            order.customer.bought -= order.quantity
+            order.product.stock += order.quantity
+            order.product.ordered -= order.quantity
+            order.product.save()
+            order.customer.save()
+
+            if order.payment == 'Borc':
+
+                order.customer.total_loan -= order.quantity * order.product.price
+                order.customer.save()
+
+                if order.customer.total_loan <= 0:
+                    order.customer.total_loan = 0
+                    order.customer.is_loan = False
+                    order.customer.save()
+
+            else:
+
+                order.customer.total_pay -= order.quantity * order.product.price
+                order.customer.save()
+
+                if order.customer.total_pay <= 0:
+                    order.customer.total_pay = 0
+                    order.customer.save()
+
+            order.customer.save()
+            order.product.save()
+
+            order.delete()

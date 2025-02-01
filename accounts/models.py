@@ -29,16 +29,16 @@ class OrderModel(models.Model):
         CART = 'Kredi Kartı', 'Kredi Kartı'
         CASH = 'Nakit', 'Nakit'
         LOAN = 'Borç', 'Borç'
+
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name='Müşteri', related_name='orders')
     product = models.ForeignKey('bayi.Product', verbose_name='Ürün Adı', related_name='products', on_delete=models.PROTECT)
-    order_number = models.UUIDField(unique=True, db_index=True, verbose_name='Sipariş Numarası')
+    order_number = models.UUIDField(unique=True, verbose_name='Sipariş Numarası')
 
-    payment = models.CharField(max_length=11, choices=OrderMethod.choices, default=OrderMethod.CART, verbose_name='Ödeme Yöntemi')
+    payment = models.CharField(max_length=11, choices=OrderMethod.choices, verbose_name='Ödeme Yöntemi')
     quantity = models.PositiveIntegerField(verbose_name='Aldığı ürün miktarı', default=0)
-    cost = models.FloatField(verbose_name='Ödeme Girişi', default=0, null=True, blank=True)
+    cost = models.FloatField(verbose_name='Ödeme Girişi', null=True, blank=True)
     total = models.FloatField(verbose_name='Toplam', default=0)
     remain = models.FloatField(verbose_name='Kalan tutar', default=0)
-
 
     order_date = models.DateTimeField(verbose_name='Sipariş Tarihi', auto_now_add=True)
     last_date = models.DateField(verbose_name='Son Ödeme Tarihi', blank=True, null=True)
@@ -50,8 +50,4 @@ class OrderModel(models.Model):
         ordering = ['-order_date']
         verbose_name = 'Sipariş'
         verbose_name_plural = 'Siparişler'
-
-
-
-
 

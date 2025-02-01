@@ -18,7 +18,11 @@ class CustomerForm(forms.ModelForm):
     valid = forms.BooleanField(required=True, widget=forms.CheckboxInput(attrs={'type': 'checkbox'}),
                                label='Bilgilerimin doğruluğunu kontrol ettim ve satın alma işlemini onalıyorum.')
 
-    payment = forms.ChoiceField(label='Ödeme Yöntemi', choices={'Nakit': 'Nakit', 'Kredi Kartı': 'Kredi Kartı', 'Borç': 'Borç'}, required=True)
+    payment = forms.ChoiceField(
+        label='Ödeme yöntemi seçiniz',
+        required=True,
+        choices={'': '-----', 'Nakit': 'Nakit', 'Kredi Kartı': 'Kredi Kartı', 'Borç': 'Borç'},
+    )
 
     class Meta:
         model = Customer
@@ -29,11 +33,15 @@ class CustomerForm(forms.ModelForm):
             'address': forms.Textarea(attrs={'class': 'form-control', 'rows': '3'}),
         }
 
+    def clean(self):
+        if self.cleaned_data['payment'] == 'Borç':
+            if self.cleaned_data['last_date'] is None:
+                self.add_error(field='last_date', error='Borç işaretlediğiniz için son ödeme tarihini giriniz')
+        return self.cleaned_data
+
 
 class CustomerInformationModelForm(forms.ModelForm):
-
     class Meta:
-
         model = Customer
 
         fields = ['telephone', 'address', ]
